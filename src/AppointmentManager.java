@@ -6,7 +6,6 @@ public class AppoinmentManager {
     // Logic methods
     /**
      * Method to handle scheduling of appointments
-     *
      * @param patient is the Patient that the Appointment will be created with
      * @param provider is the Provider that the Appointment will be created with
      * @param reason is the reason for the Appointment
