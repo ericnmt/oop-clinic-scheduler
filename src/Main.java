@@ -15,7 +15,7 @@ public class Main {
         AppointmentManager manager = new AppointmentManager();
 
         // Create patient
-        Patient patient1 = new Patient(001, "John Doe", LocalDate.of(2000,01,01),"johndoe@example.com");
+        Patient patient1 = new Patient(101, "John Doe", LocalDate.of(2000,01,01),"johndoe@example.com");
         // Add patient1 to list and print patient1 details
         patients.add(patient1);
         System.out.println("Registered Patient: " + patient1.toString());
