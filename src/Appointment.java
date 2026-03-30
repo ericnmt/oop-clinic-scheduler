@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 public class Appointment {
-    private String appointmentId;
+    private int appointmentId;
     private Patient patient;
     private Provider provider;
     private LocalDateTime startDateTime;
@@ -9,7 +9,7 @@ public class Appointment {
     private String reason;
 
     // Constructor, all parameters must exist
-    public Appointment(String appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, AppointmentStatus status, String reason) {
+    public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, AppointmentStatus status, String reason) {
         this.appointmentId = appointmentId;
         this.patient = patient;
         this.provider = provider;
@@ -20,11 +20,11 @@ public class Appointment {
     }
 
     // Getters and Setters
-    public String getAppointmentId() {
+    public int getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(String appointmentId) {
+    public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
     }
 
