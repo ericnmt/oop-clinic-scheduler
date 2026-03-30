@@ -4,6 +4,13 @@ public class Patient{
     private String dateOfBirth;
     private String contactInfo;
 
+    public Patient(String patientID, String name, String dateOfBirth, String contactInfo) {
+        this.patientID = patientID;
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.contactInfo = contactInfo;
+    }
+
     // Getters and Setters
     public String getPatientID() {
         return patientID;

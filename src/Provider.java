@@ -4,6 +4,13 @@ public class Provider{
     private String specialty;
     private String location;
 
+    public Provider(int providerId, String name, String specialty, String location) {
+        this.providerId = providerId;
+        this.name = name;
+        this.specialty = specialty;
+        this.location = location;
+    }
+
     // Getters and Setters
     public int getProviderId() {
         return providerId;
