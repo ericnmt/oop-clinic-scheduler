@@ -6,14 +6,12 @@ public class AppoinmentManager {
     // Logic methods
     /**
      * Method to handle scheduling of appointments
-     * <p>
      *
-     * </p>
-     * @param patient
-     * @param provider
-     * @param reason
-     * @param startTime
-     * @param endTime
+     * @param patient is the Patient that the Appointment will be created with
+     * @param provider is the Provider that the Appointment will be created with
+     * @param reason is the reason for the Appointment
+     * @param startTime is the start of the Appointment
+     * @param endTime is the end of the Appointment (Must be AFTEER startTime
      * @return Appointment
      */
     public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
@@ -21,12 +19,9 @@ public class AppoinmentManager {
 
     /**
      * Method to handle the modification of appointment status
-     * <p>
-     *
-     * </p>
-     * @param appointment
-     * @param startTime
-     * @param endTime
+     * @param appointment is the Appointment that will be rescheduled
+     * @param startTime is the start time of the new Appointment
+     * @param endTime is the end time of the new Appointment
      * @return Appointment
      */
     public Appointment rescheduleAppointment(Appointment appointment, LocalDateTime startTime, LocalDateTime endTime) {
@@ -34,12 +29,9 @@ public class AppoinmentManager {
 
     /**
      * Method to handle the rescheduling of appointments
-     * <p>
-     *
-     * </p>
      * Method to handle the
-     * @param appointment
-     * @param status
+     * @param appointment is the Appointment's status that will be changed
+     * @param status is the new status of the Appointment
      * @return boolean
      */
     public boolean updateAppointmentStatus(Appointment appointment, AppointmentStatus status) {
@@ -47,10 +39,7 @@ public class AppoinmentManager {
 
     /**
      * Method to retrieve all Appointments by Patient
-     * <p>
-     *
-     * </p>
-     * @param patient
+     * @param patient is the filter for the list of Appointments
      * @return Appointment
      */
     public List<Appointment> getAppointmentsByPatient(Patient patient) {
@@ -58,11 +47,8 @@ public class AppoinmentManager {
 
     /**
      * Method to retrieve all Appointments by Provider
-     * <p>
-     *
-     * </p>
-     * @param provider
-     * @return Appointment
+     * @param provider is the filter for the list of Appointments
+     * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByProvider(Provider provider) {
     }
@@ -72,9 +58,9 @@ public class AppoinmentManager {
      * <p>
      *
      * </p>
-     * @param startDate
-     * @param endDate
-     * @return Appointment
+     * @param startDate is the startDate of the range
+     * @param endDate is the endDate of the range
+     * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
     }
@@ -84,8 +70,8 @@ public class AppoinmentManager {
      * <p>
      *
      * </p>
-     * @param status
-     * @return Appointment
+     * @param status is the filter for the list of Appointments
+     * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
     }
