@@ -61,9 +61,6 @@ public class AppoinmentManager {
 
     /**
      * Method to retrieve all Appointments by a given date range
-     * <p>
-     *
-     * </p>
      * @param startDate is the startDate of the range
      * @param endDate is the endDate of the range
      * @return List of Appointments
@@ -74,9 +71,6 @@ public class AppoinmentManager {
 
     /**
      * Method to retrieve all Appointments by Status
-     * <p>
-     *
-     * </p>
      * @param status is the filter for the list of Appointments
      * @return List of Appointments
      */
