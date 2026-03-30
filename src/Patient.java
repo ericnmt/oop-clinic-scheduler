@@ -1,25 +1,35 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class Patient{
-    private String patientID;
+    private int patientId;
     private String name;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String contactInfo;
 
-    // Constructor, all parameters must exist
-    public Patient(String patientID, String name, String dateOfBirth, String contactInfo) {
-        this.patientID = patientID;
+
+    /**
+     * Constructor, all parameters must exist
+     * @param patientId of Patient
+     * @param name of Patient
+     * @param dateOfBirth of Patient
+     * @param contactInfo of Patient
+     */
+    public Patient(int patientId, String name, LocalDate dateOfBirth, String contactInfo) {
+        this.patientId = patientId;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.contactInfo = contactInfo;
     }
 
     // Getters and Setters
-    public String getPatientID() {
-        return patientID;
+    public int getPatientId() {
+        return patientId;
     }
 
-    // REVISE: A patientID should always remain the same
-    public void setPatientID(String patientID) {
-        this.patientID = patientID;
+    // REVISE: A patientId should always remain the same
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
     public String getName() {
@@ -30,11 +40,11 @@ public class Patient{
         this.name = name;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -51,7 +61,7 @@ public class Patient{
     @Override
     public String toString() {
         return "Patient{" +
-                "patientID='" + patientID + '\'' +
+                "patientId='" + patientId + '\'' +
                 ", name='" + name + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", contactInfo='" + contactInfo + '\'' +
