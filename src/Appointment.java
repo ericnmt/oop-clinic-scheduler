@@ -8,6 +8,15 @@ public class Appointment {
     private AppointmentStatus status;
     private String reason;
 
+    /**
+     * @param appointmentId of Appointment, unique
+     * @param patient who will be seen
+     * @param provider who will see patient
+     * @param startDateTime of Appointment
+     * @param endDateTime of Appointment
+     * @param status of Appointment
+     * @param reason of Appointment
+     */
     // Constructor, all parameters must exist
     public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, AppointmentStatus status, String reason) {
         this.appointmentId = appointmentId;

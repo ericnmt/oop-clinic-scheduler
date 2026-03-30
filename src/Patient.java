@@ -6,7 +6,6 @@ public class Patient{
     private LocalDate dateOfBirth;
     private String contactInfo;
 
-
     /**
      * Constructor, all parameters must exist
      * @param patientId of Patient

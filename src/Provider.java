@@ -4,6 +4,13 @@ public class Provider{
     private String specialty;
     private String location;
 
+    // Constructor, all parameters must exist
+    /**
+     * @param providerId of Provider, unique
+     * @param name of Provider
+     * @param specialty of Provider
+     * @param location of Provider
+     */
     public Provider(int providerId, String name, String specialty, String location) {
         this.providerId = providerId;
         this.name = name;
