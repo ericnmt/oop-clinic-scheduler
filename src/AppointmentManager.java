@@ -3,7 +3,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppoinmentManager {
+public class AppointmentManager {
+
+    // Temporary block for demo
+    // HashMap may be utilized later on
+    private List<Appointment> appointmentList;
+    public AppointmentManager() {
+        this.appointmentList = new ArrayList<>();
+    }
+
     // Logic methods
     /**
      * Method to handle scheduling of appointments
@@ -15,6 +23,7 @@ public class AppoinmentManager {
      * @return Appointment
      */
     public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
+        // TBA: Scheduling logic: validate time, provider availability
         return null;
     }
 
@@ -26,6 +35,7 @@ public class AppoinmentManager {
      * @return Appointment
      */
     public Appointment rescheduleAppointment(Appointment appointment, LocalDateTime startTime, LocalDateTime endTime) {
+        // TBA: Rescheduling logic: conflict checks, status validation
         return null;
     }
 
@@ -38,6 +48,7 @@ public class AppoinmentManager {
      */
     public boolean updateAppointmentStatus(Appointment appointment, AppointmentStatus status) {
         return false;
+        // TBA: Validation for status changes
     }
 
     // Search Methods
@@ -48,6 +59,7 @@ public class AppoinmentManager {
      */
     public List<Appointment> getAppointmentsByPatient(Patient patient) {
         return new ArrayList<>();
+        // TBA: Proper return signature, filter logic (by patientId)
     }
 
     /**
@@ -57,6 +69,7 @@ public class AppoinmentManager {
      */
     public List<Appointment> getAppointmentsByProvider(Provider provider) {
         return new ArrayList<>();
+        // TBA: Proper return signature, filter logic (by providerId)
     }
 
     /**
@@ -67,6 +80,7 @@ public class AppoinmentManager {
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
         return new ArrayList<>();
+        // TBA: Proper return signature, filter logic (by date range)
     }
 
     /**
@@ -76,5 +90,6 @@ public class AppoinmentManager {
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
         return new ArrayList<>();
+        // TBA: Proper return signature, filter logic (by status)
     }
 }

@@ -4,6 +4,7 @@ public class Patient{
     private String dateOfBirth;
     private String contactInfo;
 
+    // Constructor, all parameters must exist
     public Patient(String patientID, String name, String dateOfBirth, String contactInfo) {
         this.patientID = patientID;
         this.name = name;
