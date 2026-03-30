@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class AppoinmentManager {
     // Logic methods
@@ -13,7 +16,7 @@ public class AppoinmentManager {
      * @param endTime
      * @return Appointment
      */
-    public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocaDateTime startTime, LocalDateTIme endTime) {
+    public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
     }
 
     /**
