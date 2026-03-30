@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppoinmentManager {
@@ -14,6 +15,7 @@ public class AppoinmentManager {
      * @return Appointment
      */
     public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
+        return null;
     }
 
     /**
@@ -24,6 +26,7 @@ public class AppoinmentManager {
      * @return Appointment
      */
     public Appointment rescheduleAppointment(Appointment appointment, LocalDateTime startTime, LocalDateTime endTime) {
+        return null;
     }
 
     /**
@@ -31,17 +34,20 @@ public class AppoinmentManager {
      * Method to handle the
      * @param appointment is the Appointment's status that will be changed
      * @param status is the new status of the Appointment
-     * @return boolean
+     * @return boolean, true if status is the same as new status
      */
     public boolean updateAppointmentStatus(Appointment appointment, AppointmentStatus status) {
+        return false;
     }
 
+    // Search Methods
     /**
      * Method to retrieve all Appointments by Patient
      * @param patient is the filter for the list of Appointments
      * @return Appointment
      */
     public List<Appointment> getAppointmentsByPatient(Patient patient) {
+        return new ArrayList<>();
     }
 
     /**
@@ -50,6 +56,7 @@ public class AppoinmentManager {
      * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByProvider(Provider provider) {
+        return new ArrayList<>();
     }
 
     /**
@@ -62,6 +69,7 @@ public class AppoinmentManager {
      * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
+        return new ArrayList<>();
     }
 
     /**
@@ -73,5 +81,6 @@ public class AppoinmentManager {
      * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
+        return new ArrayList<>();
     }
 }
