@@ -112,8 +112,8 @@ public class AppointmentManager {
     /**
      * Method to handle the modification of appointment status
      * @param appointmentId is the ID (key) of the Appointment that will be rescheduled
-     * @param startTime is the start time of the new Appointment
-     * @param endTime is the end time of the new Appointment
+     * @param startTime is the NEW start time of the Appointment
+     * @param endTime is the NEW end time of the Appointment
      * @return Appointment
      */
     public Appointment rescheduleAppointment(int appointmentId, LocalDateTime startTime, LocalDateTime endTime) {
@@ -162,13 +162,7 @@ public class AppointmentManager {
         return apptToBeMoved;
     }
 
-    /**
-     * Method to handle the rescheduling of appointments
-     * Method to handle the
-     * @param appointmentId is the appointment ID where the status will be changed
-     * @param status is the new status of the Appointment
-     * @return boolean, true if status is the same as new status
-     */
+
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         // Search through list of appointment, get appointment that needs to be updated
         Appointment apptToBeUpdated = null;
@@ -182,8 +176,20 @@ public class AppointmentManager {
             throw new IllegalArgumentException("Cannot update status: Appointment " + appointmentId + " not found.");
         }
 
-        // State transition logic, validate status limitations/rules
+        AppointmentStatus currentStatus = apptToBeUpdated.getStatus();
 
+        // State transition logic, validate status limitations/rules
+        // Method fails when: Status is being changed from CANCELLED to COMPLETED and
+        // status is being changed from COMPLETED to SCHEDULED
+        if (currentStatus == AppointmentStatus.CANCELLED && status == AppointmentStatus.COMPLETED) {
+            throw new IllegalStateException("A CANCELLED appointment cannot become COMPLETED.");
+        }
+        if (currentStatus == AppointmentStatus.COMPLETED && status == AppointmentStatus.SCHEDULED) {
+            throw new IllegalStateException("A COMPLETED appointment cannot go back to SCHEDULED");
+        }
+
+        apptToBeUpdated.setStatus(status);
+        return true;
     }
 
     // Search Methods
