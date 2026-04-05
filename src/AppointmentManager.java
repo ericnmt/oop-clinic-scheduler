@@ -1,15 +1,50 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppointmentManager {
 
-    // Temporary block for demo
-    // HashMap may be utilized later on
+    /**
+     * Storage initialization for Patient, Appointment, Provider objects
+     * Patient and Provider stored as HashMap with the "id (int)" field being the key
+     * Appointment objects stored in array (list)
+     * nextAppointmentId is auto-incrementing
+     */
+    private Map<Integer, Patient> patientDirectory;
+    private Map<Integer, Provider> providerDirectory;
     private List<Appointment> appointmentList;
+    private int nextAppointmentId;
+
+    /**
+     * Constructor for AppointmentManager class
+     */
     public AppointmentManager() {
+        this.patientDirectory = new HashMap<>();
+        this.providerDirectory = new HashMap<>();
         this.appointmentList = new ArrayList<>();
+        this.nextAppointmentId = 1;
+    }
+
+    // Validation methods for adding a Patient and Provider
+    /**
+     * Logic: 1. check if null, 2. check if already exists,
+     * 3. otherwise, add patient to directory map with their patientId as the key.
+     *
+     * @param patient to be validated
+     */
+    public void addPatient(Patient patient) {
+        // Exception if patient object is null
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null.");
+        }
+        // Exception if patient object already exists
+        if (patientDirectory.containsKey(patient.getPatientId())) {
+            throw new IllegalArgumentException("Patient ID already exists");
+        }
+        patientDirectory.put(patient.getPatientId(), patient);
     }
 
     // Logic methods
