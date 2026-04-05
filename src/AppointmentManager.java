@@ -83,6 +83,12 @@ public class AppointmentManager {
             throw new IllegalArgumentException("Cannot schedule: Provider ID: " + providerId + " does not exist.");
         }
         // 2. validate time (endTime > startTime) and startTime > current time
+        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
+            throw new IllegalArgumentException("Cannot schedule: Invalid time range: " + endTime + " must be after " + startTime);
+        }
+        if (startTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Cannot schedule: Appointments cannot be made in the past.");
+        }
         // 3. No overlapping appointments for provider
         // 4. If all pass, create and return appointment
         return null;
