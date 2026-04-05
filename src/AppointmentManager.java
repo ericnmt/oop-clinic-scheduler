@@ -142,6 +142,20 @@ public class AppointmentManager {
             throw new IllegalArgumentException("Cannot reschedule: Appointments cannot be moved to the past.");
         }
         // 4. Check for provider overlaps, ignore current (THIS) appt
+        int providerId = apptToBeMoved.getProvider().getProviderId();
+        for (Appointment existingAppt : appointmentList) {
+            // Skipping current appointment being rescheduled
+            if (existingAppt.getAppointmentId() == appointmentId) {
+                continue;
+            }
+            // Validate provider with providerId AND if appointment is NOT cancelled, validate time range w/ other appointment
+            if (existingAppt.getProvider().getProviderId() == providerId && existingAppt.getStatus() != AppointmentStatus.CANCELLED) {
+                // Compare start and end times of appointment, throw exception if time range is violated.
+                if (startTime.isBefore(existingAppt.getEndDateTime()) && endTime.isAfter(existingAppt.getStartDateTime())) {
+                    throw new IllegalStateException("Cannot reschedule: Provider has a conflicting appointment.");
+                }
+            }
+        }
         // 5. Update times for appointment IF all checks are successful
         return null;
     }
