@@ -33,8 +33,11 @@ public class Main {
         System.out.println("TEST 3: Valid status update");
         boolean updated = manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.CANCELLED);
         if (updated) {
-            System.out.println("Successly updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
+            System.out.println("Successfully updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
         }
+
+        // Set appt1 status back to SCHEDULED for later use
+        manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.SCHEDULED);
 
         System.out.println("TEST 4: Invalid cases");
         // Case A: Invalid time range
@@ -45,6 +48,15 @@ public class Main {
             System.out.println("Expected error: " + e.getMessage());
         }
         // Case B: Provider overlap
+        try {
+            System.out.println("Case B: provider overlap");
+            // start: 9:35 AM, end: 10:30 AM on April 10, 2026
+            LocalDateTime overlapStart = LocalDateTime.of(2026, 4, 10, 9, 30);
+            LocalDateTime overlapEnd = LocalDateTime.of(2026, 4, 10, 10, 30);
+            manager.scheduleAppointment(102, 701, "Consultation follow up", overlapStart, overlapEnd);
+        } catch (IllegalStateException e) {
+            System.out.println("Expected error: " + e.getMessage());
+        }
         // Case C: Missing Entity
     }
 }
