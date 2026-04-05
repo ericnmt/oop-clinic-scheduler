@@ -14,11 +14,11 @@ public class Appointment {
      * @param provider who will see patient
      * @param startDateTime of Appointment
      * @param endDateTime of Appointment
-     * @param status of Appointment
      * @param reason of Appointment
+     * AppointmentStatus is set to SCHEDULED by default
      */
     // Constructor, all parameters must exist
-    public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, AppointmentStatus status, String reason) {
+    public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, String reason) {
         this.appointmentId = appointmentId;
         this.patient = patient;
         this.provider = provider;
