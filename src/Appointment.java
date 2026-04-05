@@ -97,4 +97,18 @@ public class Appointment {
         this.endDateTime = newEnd;
         return true;
     }
+
+    // TBA: Create readable format when returning appointment details
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "appointmentId=" + appointmentId +
+                ", patient=" + patient +
+                ", provider=" + provider +
+                ", startDateTime=" + startDateTime +
+                ", endDateTime=" + endDateTime +
+                ", status=" + status +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }
