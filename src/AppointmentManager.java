@@ -157,7 +157,9 @@ public class AppointmentManager {
             }
         }
         // 5. Update times for appointment IF all checks are successful
-        return null;
+        apptToBeMoved.setStartDateTime(startTime);
+        apptToBeMoved.setEndDateTime(endTime);
+        return apptToBeMoved;
     }
 
     /**
