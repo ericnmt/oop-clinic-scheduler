@@ -162,7 +162,6 @@ public class AppointmentManager {
         return apptToBeMoved;
     }
 
-
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         // Search through list of appointment, get appointment that needs to be updated
         Appointment apptToBeUpdated = null;
