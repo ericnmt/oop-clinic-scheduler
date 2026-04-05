@@ -131,7 +131,16 @@ public class AppointmentManager {
             throw new IllegalArgumentException("Cannot Reschedule: Appointment ID " + appointmentId + " not found.");
         }
         // 2. Check if appointment is allowed to be scheduled
+        if (apptToBeMoved.getStatus() == AppointmentStatus.CANCELLED || apptToBeMoved.getStatus() == AppointmentStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot reschedule an appointment that is Completed or Cancelled.");
+        }
         // 3. Validate time
+        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
+            throw new IllegalArgumentException("Cannot reschedule: Start time must be strictly before the end time.");
+        }
+        if (startTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Cannot reschedule: Appointments cannot be moved to the past.");
+        }
         // 4. Check for provider overlaps, ignore current (THIS) appt
         // 5. Update times for appointment IF all checks are successful
         return null;
