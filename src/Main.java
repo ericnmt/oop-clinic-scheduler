@@ -29,5 +29,11 @@ public class Main {
 
         Appointment appt1 = manager.scheduleAppointment(101, 701, "Routine checkup", validStart, validEnd);
         System.out.println("Successfully scheduled Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
+
+        System.out.println("TEST 3: Valid status update");
+        boolean updated = manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.CANCELLED);
+        if (updated) {
+            System.out.println("Successly updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
+        }
     }
 }
