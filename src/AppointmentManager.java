@@ -89,9 +89,24 @@ public class AppointmentManager {
         if (startTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Cannot schedule: Appointments cannot be made in the past.");
         }
+
+        Patient patient = patientDirectory.get(patientId);
+        Provider provider = providerDirectory.get(providerId);
         // 3. No overlapping appointments for provider
-        // 4. If all pass, create and return appointment
-        return null;
+        // Iterate through Appointment already scheduled
+        for (Appointment existingAppointments : appointmentList) {
+            // If an appointment already exists with a provider AND an overlapping appointment is NOT CANCELLED then validate time range
+            if (existingAppointments.getProvider().getProviderId() == providerId && existingAppointments.getStatus() != AppointmentStatus.CANCELLED) {
+                // If time range conflicts with given start and end times, throw exception
+                if (startTime.isBefore(existingAppointments.getEndDateTime()) && endTime.isAfter(existingAppointments.getStartDateTime())) {
+                    throw new IllegalStateException("Cannot schedule: Provider has a conflicting appointment.");
+                }
+            }
+        }
+        // If all validations pass, create/save new appointment object, return appointment
+        Appointment newAppt = new Appointment(nextAppointmentId++, patient, provider, startTime, endTime, reason);
+        appointmentList.add(newAppt);
+        return newAppt;
     }
 
     /**
