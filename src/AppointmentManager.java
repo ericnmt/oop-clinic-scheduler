@@ -67,16 +67,22 @@ public class AppointmentManager {
     // Logic methods
     /**
      * Method to handle scheduling of appointments
-     * @param patient is the Patient that the Appointment will be created with
-     * @param provider is the Provider that the Appointment will be created with
+     * @param patientId is the unique ID of the Patient that the Appointment will be created with
+     * @param providerId is the unique ID of the Provider that the Appointment will be created with
      * @param reason is the reason for the Appointment
      * @param startTime is the start of the Appointment
-     * @param endTime is the end of the Appointment (Must be AFTEER startTime
+     * @param endTime is the end of the Appointment (Must be AFTER startTime)
      * @return Appointment
      */
-    public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
-        // 1. entities must exist
-        // 2. validate time (endTime > startTime)
+    public Appointment scheduleAppointment(int patientId, int providerId, String reason, LocalDateTime startTime, LocalDateTime endTime) {
+        // 1. Patient and Provider must exist, validate with patientId and providerId
+        if (!patientDirectory.containsKey(patientId)) {
+            throw new IllegalArgumentException("Cannot schedule: Patient ID: " + patientId + " does not exist.");
+        }
+        if (!providerDirectory.containsKey(providerId)) {
+            throw new IllegalArgumentException("Cannot schedule: Provider ID: " + providerId + " does not exist.");
+        }
+        // 2. validate time (endTime > startTime) and startTime > current time
         // 3. No overlapping appointments for provider
         // 4. If all pass, create and return appointment
         return null;
