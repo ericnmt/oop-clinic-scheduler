@@ -15,7 +15,7 @@ public class Appointment {
      * @param startDateTime of Appointment
      * @param endDateTime of Appointment
      * @param reason of Appointment
-     * AppointmentStatus is set to SCHEDULED by default
+     * AppointmentStatus is set to SCHEDULED by default until changed
      */
     // Constructor, all parameters must exist
     public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, String reason) {
