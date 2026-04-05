@@ -75,7 +75,10 @@ public class AppointmentManager {
      * @return Appointment
      */
     public Appointment scheduleAppointment(Patient patient, Provider provider, String reason, LocalDateTime startTime, LocalDateTime endTime) {
-        // TBA: Scheduling logic: validate time, provider availability
+        // 1. entities must exist
+        // 2. validate time (endTime > startTime)
+        // 3. No overlapping appointments for provider
+        // 4. If all pass, create and return appointment
         return null;
     }
 
