@@ -20,7 +20,7 @@ public class Main {
         manager.addPatient(patient1);
         manager.addPatient(patient2);
         manager.addProvider(provider1);
-        System.out.println("Successfully added (2) patients and provider to the system.\n");
+        System.out.println("Successfully added (2) patients and provider to the system.");
 
         System.out.println("TEST 2: Valid scheduling");
         // start: 9 AM, end: 10 AM on April 10, 2026
