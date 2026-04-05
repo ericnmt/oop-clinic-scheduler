@@ -162,6 +162,12 @@ public class AppointmentManager {
         return apptToBeMoved;
     }
 
+    /**
+     * Method to handle the rescheduling of appointments
+     * @param appointmentId is the ID of the Appointment's status that will be updated
+     * @param status is the NEW status of the Appointment
+     * @return boolean, true if status is the same as new status
+     */
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         // Search through list of appointment, get appointment that needs to be updated
         Appointment apptToBeUpdated = null;
