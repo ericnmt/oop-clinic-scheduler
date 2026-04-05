@@ -64,5 +64,11 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("Expected error: " + e.getMessage());
         }
+
+        System.out.println("TEST 5: Search methods");
+        manager.scheduleAppointment(101, 701, "Follow-up", validStart.plusDays(2), validEnd.plusDays(2));
+
+        List<Appointment> johnDoeAppts = manager.getAppointmentsByPatient(101);
+        System.out.println("Retrieved " + johnDoeAppts.size() + " appointments for John Doe (ID 101)");
     }
 }
