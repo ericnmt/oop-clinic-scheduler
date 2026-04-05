@@ -199,23 +199,33 @@ public class AppointmentManager {
 
     // Search Methods
     /**
-     * Method to retrieve all Appointments by Patient
-     * @param patient is the filter for the list of Appointments
+     * Method to retrieve all Appointments by Patient ID
+     * @param patientId (ID) is the filter for the list of Appointments
      * @return Appointment
      */
-    public List<Appointment> getAppointmentsByPatient(Patient patient) {
-        return new ArrayList<>();
-        // TBA: Proper return signature, filter logic (by patientId)
+    public List<Appointment> getAppointmentsByPatient(int patientId) {
+        List<Appointment> results = new ArrayList<>();
+        for (Appointment appt : appointmentList) {
+            if (appt.getPatient().getPatientId() == patientId) {
+                results.add(appt);
+            }
+        }
+        return results;
     }
 
     /**
-     * Method to retrieve all Appointments by Provider
-     * @param provider is the filter for the list of Appointments
+     * Method to retrieve all Appointments by Provider ID
+     * @param providerId (ID) is the filter for the list of Appointments
      * @return List of Appointments
      */
-    public List<Appointment> getAppointmentsByProvider(Provider provider) {
-        return new ArrayList<>();
-        // TBA: Proper return signature, filter logic (by providerId)
+    public List<Appointment> getAppointmentsByProvider(int providerId) {
+        List<Appointment> results = new ArrayList<>();
+        for (Appointment appt : appointmentList) {
+            if (appt.getProvider().getProviderId() == providerId) {
+                results.add(appt);
+            }
+        }
+        return results;
     }
 
     /**
@@ -225,8 +235,15 @@ public class AppointmentManager {
      * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
-        return new ArrayList<>();
-        // TBA: Proper return signature, filter logic (by date range)
+        List<Appointment> results = new ArrayList<>();
+        for (Appointment appt : appointmentList) {
+            LocalDate apptDate = appt.getStartDateTime().toLocalDate();
+            // Check if apptDate is ON or AFTER startDate and ON or BEFORE endDate
+            if (!apptDate.isBefore(startDate) && !apptDate.isAfter(endDate)) {
+                results.add(appt);
+            }
+        }
+        return results;
     }
 
     /**
@@ -235,7 +252,12 @@ public class AppointmentManager {
      * @return List of Appointments
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
-        return new ArrayList<>();
-        // TBA: Proper return signature, filter logic (by status)
+        List<Appointment> results = new ArrayList<>();
+        for (Appointment appt : appointmentList) {
+            if (appt.getStatus() == status) {
+                results.add(appt);
+            }
+        }
+        return results;
     }
 }
