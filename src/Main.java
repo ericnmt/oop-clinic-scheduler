@@ -58,5 +58,11 @@ public class Main {
             System.out.println("Expected error: " + e.getMessage());
         }
         // Case C: Missing Entity
+        try {
+            System.out.println("Case C: Invalid patient ID");
+            manager.scheduleAppointment(999, 701, "Consultation", validStart, validEnd);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Expected error: " + e.getMessage());
+        }
     }
 }
