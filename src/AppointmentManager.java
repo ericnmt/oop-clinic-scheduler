@@ -111,13 +111,29 @@ public class AppointmentManager {
 
     /**
      * Method to handle the modification of appointment status
-     * @param appointment is the Appointment that will be rescheduled
+     * @param appointmentId is the ID (key) of the Appointment that will be rescheduled
      * @param startTime is the start time of the new Appointment
      * @param endTime is the end time of the new Appointment
      * @return Appointment
      */
-    public Appointment rescheduleAppointment(Appointment appointment, LocalDateTime startTime, LocalDateTime endTime) {
-        // TBA: Rescheduling logic: conflict checks, status validation
+    public Appointment rescheduleAppointment(int appointmentId, LocalDateTime startTime, LocalDateTime endTime) {
+        // 1. Search/find appointment in appointmentList
+        Appointment apptToBeMoved = null;
+        for (Appointment appt : appointmentList) {
+            if (appt.getAppointmentId() == appointmentId) {
+                apptToBeMoved = appt;
+                break;
+            }
+        }
+
+        // If appointment is not found, throw exception
+        if (apptToBeMoved == null) {
+            throw new IllegalArgumentException("Cannot Reschedule: Appointment ID " + appointmentId + " not found.");
+        }
+        // 2. Check if appointment is allowed to be scheduled
+        // 3. Validate time
+        // 4. Check for provider overlaps, ignore current (THIS) appt
+        // 5. Update times for appointment IF all checks are successful
         return null;
     }
 
