@@ -40,11 +40,28 @@ public class AppointmentManager {
         if (patient == null) {
             throw new IllegalArgumentException("Patient cannot be null.");
         }
-        // Exception if patient object already exists
+        // Exception if patient's patientId object already exists
         if (patientDirectory.containsKey(patient.getPatientId())) {
-            throw new IllegalArgumentException("Patient ID already exists");
+            throw new IllegalArgumentException("Patient ID already exists.");
         }
         patientDirectory.put(patient.getPatientId(), patient);
+    }
+
+    /**
+     * Same logic as addPatient method (above)
+     *
+     * @param provider to be validated
+     */
+    public void addProvider(Provider provider) {
+        // Exception if provider object is null
+        if (provider == null) {
+            throw new IllegalArgumentException("Provider cannot be null.");
+        }
+        // Exception if provider's providerId already exists
+        if (providerDirectory.containsKey(provider.getProviderId())) {
+            throw new IllegalArgumentException("Provider ID already exists.");
+        }
+        providerDirectory.put(provider.getProviderId(), provider);
     }
 
     // Logic methods
