@@ -21,5 +21,13 @@ public class Main {
         manager.addPatient(patient2);
         manager.addProvider(provider1);
         System.out.println("Successfully added (2) patients and provider to the system.\n");
+
+        System.out.println("TEST 2: Valid scheduling");
+        // start: 9 AM, end: 10 AM on April 10, 2026
+        LocalDateTime validStart = LocalDateTime.of(2026, 4, 10, 9, 0);
+        LocalDateTime validEnd = LocalDateTime.of(2026, 4, 10, 10, 0);
+
+        Appointment appt1 = manager.scheduleAppointment(101, 701, "Routine checkup", validStart, validEnd);
+        System.out.println("Successfully scheduled Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
     }
 }
