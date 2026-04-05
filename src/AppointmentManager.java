@@ -165,13 +165,25 @@ public class AppointmentManager {
     /**
      * Method to handle the rescheduling of appointments
      * Method to handle the
-     * @param appointment is the Appointment's status that will be changed
+     * @param appointmentId is the appointment ID where the status will be changed
      * @param status is the new status of the Appointment
      * @return boolean, true if status is the same as new status
      */
-    public boolean updateAppointmentStatus(Appointment appointment, AppointmentStatus status) {
-        return false;
-        // TBA: Validation for status changes
+    public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
+        // Search through list of appointment, get appointment that needs to be updated
+        Appointment apptToBeUpdated = null;
+        for (Appointment appt : appointmentList) {
+            if (appt.getAppointmentId() == appointmentId) {
+                apptToBeUpdated = appt;
+                break;
+            }
+        }
+        if (apptToBeUpdated == null) {
+            throw new IllegalArgumentException("Cannot update status: Appointment " + appointmentId + " not found.");
+        }
+
+        // State transition logic, validate status limitations/rules
+
     }
 
     // Search Methods
