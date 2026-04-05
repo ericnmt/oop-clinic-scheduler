@@ -35,5 +35,16 @@ public class Main {
         if (updated) {
             System.out.println("Successly updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
         }
+
+        System.out.println("TEST 4: Invalid cases");
+        // Case A: Invalid time range
+        try {
+            System.out.println("Case A: end time BEFORE start time");
+            manager.scheduleAppointment(102, 701, "Consultation", validEnd, validStart);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Expected error: " + e.getMessage());
+        }
+        // Case B: Provider overlap
+        // Case C: Missing Entity
     }
 }
