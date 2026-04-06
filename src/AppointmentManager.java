@@ -93,7 +93,7 @@ public class AppointmentManager {
         Patient patient = patientDirectory.get(patientId);
         Provider provider = providerDirectory.get(providerId);
         // 3. No overlapping appointments for provider
-        // Iterate through Appointment already scheduled
+        // Iterate through Appointments already scheduled
         for (Appointment existingAppointments : appointmentList) {
             // If an appointment already exists with a provider AND an overlapping appointment is NOT CANCELLED then validate time range
             if (existingAppointments.getProvider().getProviderId() == providerId && existingAppointments.getStatus() != AppointmentStatus.CANCELLED) {
