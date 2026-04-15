@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 
 /**
- * Class to represent a person/patient that requests to schedule an Appointment.
+ * Class to represent a patient/provider that requests to schedule an Appointment.
  */
 public class Patient{
     /**
@@ -19,7 +19,7 @@ public class Patient{
     private String contactInfo;
 
     /**
-     * Create a new patient in the system.
+     * Construct a new patient in the system.
      *
      * @param patientId of the Patient
      * @param name of the Patient
@@ -45,7 +45,7 @@ public class Patient{
 
     /**
      * Set the ID of a patient.
-     * patientId should only be set ONCE when the patient is added to the system.
+     * patientId should only be set ONCE when a patient is added to the system.
      *
      * @param patientId of the patient
      */
