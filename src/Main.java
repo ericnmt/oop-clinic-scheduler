@@ -1,10 +1,13 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-// Main method to test functionality of basic class code translations
 public class Main {
+    /**
+     * Main method to demonstrate code functionality.
+     *
+     * @param args from stdin
+     */
     public static void main(String[] args) {
         System.out.println("Checkpoint 1.5: Demo Appointment Scheduling");
 
