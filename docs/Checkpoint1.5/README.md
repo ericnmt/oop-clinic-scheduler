@@ -19,7 +19,7 @@ As per Checkpoint 1.5 requirements, the following features are not yet implement
 * **Database Integration:** There is no database implementation (SQLite), data will reset once the program terminates.
 * **Frontend:** There is no graphical interface developed yet. Interaction currently only handled via the console.
 
-## How Run the Test
+## How to Run the Test
 We decided on going with a driver-based approach. All test are contained within the 'Main.java' file.
 
 TO run the tests:
