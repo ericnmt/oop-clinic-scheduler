@@ -5,21 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class to represent the core logic of appointment scheduling and modification.
+ */
 public class AppointmentManager {
-
     /**
-     * Storage initialization for Patient, Appointment, Provider objects
-     * Patient and Provider stored as HashMap with the "id (int)" field being the key
-     * Appointment objects stored in array (list)
-     * nextAppointmentId is auto-incrementing
+     * hashMap dictionary for all Patients in memory.
      */
     private Map<Integer, Patient> patientDirectory;
+    /**
+     * hashMap dictionary for all Providers in memory.
+     */
     private Map<Integer, Provider> providerDirectory;
+    /**
+     * List of all Appointments in memory.
+     */
     private List<Appointment> appointmentList;
+    /**
+     * List of Appointments in memory.
+     */
     private int nextAppointmentId;
 
     /**
-     * Constructor for AppointmentManager class
+     * Constructor for the Appointment Manager.
      */
     public AppointmentManager() {
         this.patientDirectory = new HashMap<>();
@@ -30,10 +38,11 @@ public class AppointmentManager {
 
     // Validation methods for adding a Patient and Provider
     /**
+     * Add a patient to the system.
      * Logic: 1. check if null, 2. check if already exists,
      * 3. otherwise, add patient to directory map with their patientId as the key.
      *
-     * @param patient to be validated
+     * @param patient to be added to system
      */
     public void addPatient(Patient patient) {
         // Exception if patient object is null
@@ -48,9 +57,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Same logic as addPatient method (above)
+     * Add a provider to the system.
+     * Uses the same logic to validate.
      *
-     * @param provider to be validated
+     * @param provider to be added to system
      */
     public void addProvider(Provider provider) {
         // Exception if provider object is null
@@ -66,13 +76,14 @@ public class AppointmentManager {
 
     // Logic methods
     /**
-     * Method to handle scheduling of appointments
-     * @param patientId is the unique ID of the Patient that the Appointment will be created with
-     * @param providerId is the unique ID of the Provider that the Appointment will be created with
-     * @param reason is the reason for the Appointment
-     * @param startTime is the start of the Appointment
-     * @param endTime is the end of the Appointment (Must be AFTER startTime)
-     * @return Appointment
+     * Primary method to handle the scheduling logic of a new Appointment.
+     *
+     * @param patientId unique ID of the Patient that the Appointment will be created with
+     * @param providerId unique ID of the Provider that the Appointment will be created with
+     * @param reason for the Appointment
+     * @param startTime of the Appointment (must be BEFORE endTime and AFTER current time)
+     * @param endTime of the Appointment
+     * @return Appointment object that was created if all conditions pass
      */
     public Appointment scheduleAppointment(int patientId, int providerId, String reason, LocalDateTime startTime, LocalDateTime endTime) {
         // 1. Patient and Provider must exist, validate with patientId and providerId
@@ -110,10 +121,11 @@ public class AppointmentManager {
     }
 
     /**
-     * Method to handle the modification of appointment status
-     * @param appointmentId is the ID (key) of the Appointment that will be rescheduled
-     * @param startTime is the NEW start time of the Appointment
-     * @param endTime is the NEW end time of the Appointment
+     * Update the time that an Appointment takes place.
+     *
+     * @param appointmentId of the Appointment that will be rescheduled
+     * @param startTime NEW start time of the Appointment
+     * @param endTime NEW end time of the Appointment
      * @return Appointment
      */
     public Appointment rescheduleAppointment(int appointmentId, LocalDateTime startTime, LocalDateTime endTime) {
@@ -163,10 +175,11 @@ public class AppointmentManager {
     }
 
     /**
-     * Method to handle the rescheduling of appointments
-     * @param appointmentId is the ID of the Appointment's status that will be updated
-     * @param status is the NEW status of the Appointment
-     * @return boolean, true if status is the same as new status
+     * Handle the rescheduling logic of appointments.
+     *
+     * @param appointmentId of the Appointment's status that will be updated
+     * @param status NEW status of the Appointment
+     * @return true if the Appointment's status was successfully updated
      */
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         // Search through list of appointment, get appointment that needs to be updated
@@ -199,9 +212,10 @@ public class AppointmentManager {
 
     // Search Methods
     /**
-     * Method to retrieve all Appointments by Patient ID
-     * @param patientId (ID) is the filter for the list of Appointments
-     * @return Appointment
+     * Retrieve all Appointments by Patient ID.
+     *
+     * @param patientId is the filter for the list of Appointments
+     * @return Appointment(s) that match the provided patientId
      */
     public List<Appointment> getAppointmentsByPatient(int patientId) {
         List<Appointment> results = new ArrayList<>();
@@ -214,9 +228,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Method to retrieve all Appointments by Provider ID
+     * Retrieve all Appointments by Provider ID.
+     *
      * @param providerId (ID) is the filter for the list of Appointments
-     * @return List of Appointments
+     * @return Appointment(s) that match the provided providerId
      */
     public List<Appointment> getAppointmentsByProvider(int providerId) {
         List<Appointment> results = new ArrayList<>();
@@ -229,10 +244,11 @@ public class AppointmentManager {
     }
 
     /**
-     * Method to retrieve all Appointments by a given date range
+     * Retrieve all Appointments by a given date range.
+     *
      * @param startDate is the startDate of the range
      * @param endDate is the endDate of the range
-     * @return List of Appointments
+     * @return Appointment(s) that match the provided date range.
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
         List<Appointment> results = new ArrayList<>();
@@ -247,9 +263,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Method to retrieve all Appointments by Status
+     * Method to retrieve all Appointments by Status.
+     *
      * @param status is the filter for the list of Appointments
-     * @return List of Appointments
+     * @return Appointment(s) that match the provided Status
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
         List<Appointment> results = new ArrayList<>();
