@@ -39,7 +39,7 @@ public class AppointmentManager {
     // Validation methods for adding a Patient and Provider
     /**
      * Add a patient to the system.
-     * Logic: 1. check if null, 2. check if already exists,
+     * Logic: 1. check if given arg is null, 2. check if already exists,
      * 3. otherwise, add patient to directory map with their patientId as the key.
      *
      * @param patient to be added to system
