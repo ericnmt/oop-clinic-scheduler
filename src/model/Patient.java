@@ -1,7 +1,9 @@
+package model;
+
 import java.time.LocalDate;
 
 /**
- * Class to represent a patient/provider that requests to schedule an Appointment.
+ * Class to represent a patient/provider that requests to schedule an model.Appointment.
  */
 public class Patient{
     /**
@@ -21,10 +23,10 @@ public class Patient{
     /**
      * Construct a new patient in the system.
      *
-     * @param patientId of the Patient
-     * @param name of the Patient
-     * @param dateOfBirth of the Patient
-     * @param contactInfo of the Patient
+     * @param patientId of the model.Patient
+     * @param name of the model.Patient
+     * @param dateOfBirth of the model.Patient
+     * @param contactInfo of the model.Patient
      */
     public Patient(int patientId, String name, LocalDate dateOfBirth, String contactInfo) {
         this.patientId = patientId;
@@ -117,7 +119,7 @@ public class Patient{
      */
     @Override
     public String toString() {
-        return "Patient{" +
+        return "model.Patient{" +
                 "patientId='" + patientId + '\'' +
                 ", name='" + name + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +

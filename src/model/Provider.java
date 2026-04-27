@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Class to represent a provider/person that has an appointment with a patient.
  */
@@ -11,7 +13,7 @@ public class Provider {
      */
     private String name;
     /**
-     * Provider's medical specialty.
+     * model.Provider's medical specialty.
      */
     private String specialty;
     /**
@@ -22,10 +24,10 @@ public class Provider {
     /**
      * Construct a new provider in the system.
      *
-     * @param providerId of the Provider
-     * @param name of the Provider
-     * @param specialty of the  Provider
-     * @param location of the Provider
+     * @param providerId of the model.Provider
+     * @param name of the model.Provider
+     * @param specialty of the  model.Provider
+     * @param location of the model.Provider
      */
     public Provider(int providerId, String name, String specialty, String location) {
         this.providerId = providerId;
@@ -114,10 +116,10 @@ public class Provider {
      *
      * @return string of provider's details
      */
-    // Provider toString method
+    // model.Provider toString method
     @Override
     public String toString() {
-        return "Provider{" +
+        return "model.Provider{" +
                 "providerId=" + providerId +
                 ", name='" + name + '\'' +
                 ", specialty='" + specialty + '\'' +
