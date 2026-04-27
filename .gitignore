@@ -1,5 +1,17 @@
 # Compiled class files
 *.class
+target/
+build/
+out/
+# Spring Boot
+*.jar
+*.war
+*.ear
+# SQLite
+*.sqlite
+*.db
+*.sqlite3
+*.db-journal
 # Intellij IDEA files
 .idea/
 *.iml
