@@ -1,8 +1,8 @@
 package com.clinic.scheduler.dao;
 
 import com.clinic.scheduler.model.Patient;
-
 import org.springframework.stereotype.Repository;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import java.time.LocalDate;
@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Locale;
+
 
 /**
  * Implementation of PatientDao interface. Directly interacts with database through SQL queries.

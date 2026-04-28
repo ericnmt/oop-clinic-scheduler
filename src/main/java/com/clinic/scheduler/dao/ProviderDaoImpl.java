@@ -1,6 +1,7 @@
 package com.clinic.scheduler.dao;
 
 import com.clinic.scheduler.model.Provider;
+import org.springframework.stereotype.Repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Implementation of ProviderDao interface. Directly interacts with database through SQL queries.
  */
+@Repository
 public class ProviderDaoImpl implements ProviderDao{
 
     // Inject JDBCTemplate
