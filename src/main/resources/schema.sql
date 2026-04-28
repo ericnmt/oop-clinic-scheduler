@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS Provider;
 
 -- Patient Table
 CREATE TABLE Patient (
-    PatientID INTEGER PRIMARY KEY AUTOINCREMENT,
+    PatientID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     DateOfBirth TEXT NOT NULL,
     ContactInfo TEXT
@@ -12,7 +12,7 @@ CREATE TABLE Patient (
 
 -- Provider Table
 CREATE TABLE Provider (
-    ProviderID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ProviderID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     Specialty TEXT NOT NULL,
     Location TEXT NOT NULL
