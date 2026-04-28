@@ -18,7 +18,6 @@ out/
 *.iws
 *.ipr
 *.workspace.xl
-out/
 # Default ignored files
 /shelf/
 /.idea/workspace.xml
