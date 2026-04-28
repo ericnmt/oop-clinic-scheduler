@@ -7,6 +7,9 @@ import com.clinic.scheduler.model.Provider;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Interface to define Appointment database CRUD operations.
+ */
 public interface AppointmentDao {
     // Create
     void createAppointment(Appointment appointment);
