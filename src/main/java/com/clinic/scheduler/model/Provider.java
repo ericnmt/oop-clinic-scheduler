@@ -1,4 +1,4 @@
-package main.java.com.clinic.scheduler.model;
+package com.clinic.scheduler.model;
 
 /**
  * Class to represent a provider/person that has an appointment with a patient.

@@ -1,4 +1,4 @@
-package main.java.com.clinic.scheduler.model;
+package com.clinic.scheduler.model;
 
 import java.time.LocalDate;
 

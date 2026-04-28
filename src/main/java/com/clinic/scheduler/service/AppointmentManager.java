@@ -1,14 +1,14 @@
-package main.java.com.clinic.scheduler.service;
+package com.clinic.scheduler.service;
 
-import main.java.com.clinic.scheduler.model.*;
+import com.clinic.scheduler.model.*;
 
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import main.java.com.clinic.scheduler.model.Appointment;
-import main.java.com.clinic.scheduler.model.AppointmentStatus;
+import com.clinic.scheduler.model.Appointment;
+import com.clinic.scheduler.model.AppointmentStatus;
 
 import java.time.LocalDate;
 import java.util.Map;

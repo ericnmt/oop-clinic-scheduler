@@ -1,5 +1,5 @@
-import main.java.com.clinic.scheduler.service.AppointmentManager;
-import main.java.com.clinic.scheduler.model.*;
+import com.clinic.scheduler.service.AppointmentManager;
+import com.clinic.scheduler.model.*;
 //import dao.Database;
 
 import java.time.LocalDate;
@@ -31,8 +31,8 @@ public class Main {
 
         System.out.println("TEST 2: Valid scheduling");
         // start: 9 AM, end: 10 AM on April 10, 2026
-        LocalDateTime validStart = LocalDateTime.of(2026, 4, 10, 9, 0);
-        LocalDateTime validEnd = LocalDateTime.of(2026, 4, 10, 10, 0);
+        LocalDateTime validStart = LocalDateTime.of(2027, 4, 10, 9, 0);
+        LocalDateTime validEnd = LocalDateTime.of(2027, 4, 10, 10, 0);
 
         Appointment appt1 = manager.scheduleAppointment(101, 701, "Routine checkup", validStart, validEnd);
         System.out.println("Successfully scheduled main.java.com.clinic.scheduler.model.Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
@@ -58,8 +58,8 @@ public class Main {
         try {
             System.out.println("Case B: provider overlap");
             // start: 9:35 AM, end: 10:30 AM on April 10, 2026
-            LocalDateTime overlapStart = LocalDateTime.of(2026, 4, 10, 9, 30);
-            LocalDateTime overlapEnd = LocalDateTime.of(2026, 4, 10, 10, 30);
+            LocalDateTime overlapStart = LocalDateTime.of(2027, 4, 10, 9, 30);
+            LocalDateTime overlapEnd = LocalDateTime.of(2027, 4, 10, 10, 30);
             manager.scheduleAppointment(102, 701, "Consultation follow up", overlapStart, overlapEnd);
         } catch (IllegalStateException e) {
             System.out.println("Expected error: " + e.getMessage());

@@ -1,4 +1,4 @@
-package main.java.com.clinic.scheduler.model;
+package com.clinic.scheduler.model;
 
 import java.time.LocalDateTime;
 
@@ -85,7 +85,7 @@ public class Appointment {
     }
 
     /**
-     * Set the patient who's associated with an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the patient who's associated with a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @param patient associated with the appointment
      */
@@ -103,7 +103,7 @@ public class Appointment {
     }
 
     /**
-     * Set the provider who's associated with an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the provider who's associated with a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @param provider associated with the appointment
      */
@@ -112,7 +112,7 @@ public class Appointment {
     }
 
     /**
-     * Get the start date of an main.java.com.clinic.scheduler.model.Appointment.
+     * Get the start date of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @return the start date of the main.java.com.clinic.scheduler.model.Appointment
      */
@@ -121,7 +121,7 @@ public class Appointment {
     }
 
     /**
-     * Set the start time of an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the start time of a main.java.com.clinic.scheduler.model.Appointment.
      * Must be before endDateTime
      * Must be after current date time
      *
@@ -132,7 +132,7 @@ public class Appointment {
     }
 
     /**
-     * Get the start date of an main.java.com.clinic.scheduler.model.Appointment.
+     * Get the start date of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @return the start time of the appointment
      */
@@ -141,7 +141,7 @@ public class Appointment {
     }
 
     /**
-     * Set the end time of an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the end time of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @param endDateTime of the appointment
      */
@@ -150,7 +150,7 @@ public class Appointment {
     }
 
     /**
-     * Get the status of an main.java.com.clinic.scheduler.model.Appointment.
+     * Get the status of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @return the status of the appointment
      */
@@ -159,7 +159,7 @@ public class Appointment {
     }
 
     /**
-     * Set the status of an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the status of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @param status of the appointment
      */
@@ -168,7 +168,7 @@ public class Appointment {
     }
 
     /**
-     * Get the reason for the scheduling of an main.java.com.clinic.scheduler.model.Appointment.
+     * Get the reason for the scheduling of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @return the reason for the appointment
      */
@@ -177,7 +177,7 @@ public class Appointment {
     }
 
     /**
-     * Set the reason for the scheduling of an main.java.com.clinic.scheduler.model.Appointment.
+     * Set the reason for the scheduling of a main.java.com.clinic.scheduler.model.Appointment.
      *
      * @param reason for the appointment
      */
@@ -212,7 +212,7 @@ public class Appointment {
     }
 
     /**
-     * Returns an main.java.com.clinic.scheduler.model.Appointment's information as a readable string.
+     * Returns a main.java.com.clinic.scheduler.model.Appointment's information as a readable string.
      *
      * @return appointment details as a string
      */
