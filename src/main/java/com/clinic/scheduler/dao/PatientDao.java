@@ -11,12 +11,12 @@ public interface PatientDao {
     void createPatient(Patient patient);
 
     // Read
-    Patient getPatientById(int id);
+    Patient getPatientById(int patientId);
     List<Patient> getAllPatients();
 
     // Update
     void updatePatient(Patient patient);
 
     // Delete
-    void deletePatient(int id);
+    void deletePatient(int patientId);
 }

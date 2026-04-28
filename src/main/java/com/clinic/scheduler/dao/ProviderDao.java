@@ -11,13 +11,13 @@ public interface ProviderDao {
     void createProvider(Provider provider);
 
     // Read
-    Provider getProviderById(int id);
+    Provider getProviderById(int providerId);
     List<Provider> getAllProviders();
 
     // Update
     void updateProvider(Provider provider);
 
     // Delete
-    void deleteProvider(int id);
+    void deleteProvider(int providerId);
 }
 

@@ -1,10 +1,10 @@
 package com.clinic.scheduler.dao;
 
+import com.clinic.scheduler.model.Patient;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import com.clinic.scheduler.model.Patient;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -53,9 +53,9 @@ public class PatientDaoImpl implements PatientDao {
     };
 
     /**
-     * Create a patient, map it to Database.
+     * Create a patient, map it the Database.
      *
-     * @param patient to be created.
+     * @param patient to be created
      */
     @Override
     public void createPatient(Patient patient) {
@@ -66,7 +66,7 @@ public class PatientDaoImpl implements PatientDao {
     /**
      * Filter a Patient by their ID.
      *
-     * @param patientId PatientID to search for
+     * @param patientId to search for
      * @return Patient object that matches patientId provided
      */
     @Override
@@ -88,7 +88,7 @@ public class PatientDaoImpl implements PatientDao {
 
     /**
      * Update a Patient's information.
-     * Sorts through DB by patientId.
+     * Sorts through database by patientId.
      *
      * @param patient to update
      */
@@ -99,7 +99,7 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     /**
-     * Remove a patient from the DB.
+     * Remove a patient from the database.
      *
      * @param patientId of patient to remove
      */
