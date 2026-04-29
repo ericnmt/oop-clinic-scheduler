@@ -3,7 +3,7 @@ package com.clinic.scheduler.model;
 import java.time.LocalDate;
 
 /**
- * Class to represent a patient/provider that requests to schedule an main.java.com.clinic.scheduler.model.Appointment.
+ * Class to represent a patient/provider that requests to schedule an Appointment.
  */
 public class Patient{
     /**
@@ -23,10 +23,10 @@ public class Patient{
     /**
      * Construct a new patient in the system.
      *
-     * @param patientId of the main.java.com.clinic.scheduler.model.Patient
-     * @param name of the main.java.com.clinic.scheduler.model.Patient
-     * @param dateOfBirth of the main.java.com.clinic.scheduler.model.Patient
-     * @param contactInfo of the main.java.com.clinic.scheduler.model.Patient
+     * @param patientId of the Patient
+     * @param name of the Patient
+     * @param dateOfBirth of the Patient
+     * @param contactInfo of the Patient
      */
     public Patient(int patientId, String name, LocalDate dateOfBirth, String contactInfo) {
         this.patientId = patientId;
@@ -119,7 +119,7 @@ public class Patient{
      */
     @Override
     public String toString() {
-        return "main.java.com.clinic.scheduler.model.Patient{" +
+        return "Patient{" +
                 "patientId='" + patientId + '\'' +
                 ", name='" + name + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +

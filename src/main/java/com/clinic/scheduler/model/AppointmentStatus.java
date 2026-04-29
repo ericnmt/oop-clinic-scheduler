@@ -1,7 +1,7 @@
 package com.clinic.scheduler.model;
 
 /**
- * ENUMERATION class to represent the three status conditions an main.java.com.clinic.scheduler.model.Appointment can have.
+ * ENUMERATION class to represent the three status conditions a Appointment can have.
  */
 public enum AppointmentStatus {
     /**

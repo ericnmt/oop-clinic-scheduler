@@ -13,7 +13,7 @@ public class Main {
      * @param args from stdin
      */
     public static void main(String[] args) {
-        System.out.println("Checkpoint 1.5: Demo main.java.com.clinic.scheduler.model.Appointment Scheduling");
+        System.out.println("Checkpoint 1.5: Demo Appointment Scheduling");
 
         AppointmentManager manager = new AppointmentManager();
 
@@ -35,12 +35,12 @@ public class Main {
         LocalDateTime validEnd = LocalDateTime.of(2027, 4, 10, 10, 0);
 
         Appointment appt1 = manager.scheduleAppointment(101, 701, "Routine checkup", validStart, validEnd);
-        System.out.println("Successfully scheduled main.java.com.clinic.scheduler.model.Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
+        System.out.println("Successfully scheduled Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
 
         System.out.println("TEST 3: Valid status update");
         boolean updated = manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.CANCELLED);
         if (updated) {
-            System.out.println("Successfully updated main.java.com.clinic.scheduler.model.Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
+            System.out.println("Successfully updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
         }
 
         // Set appt1 status back to SCHEDULED for later use
@@ -54,7 +54,7 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("Expected error: " + e.getMessage());
         }
-        // Case B: main.java.com.clinic.scheduler.model.Provider overlap
+        // Case B: Provider overlap
         try {
             System.out.println("Case B: provider overlap");
             // start: 9:35 AM, end: 10:30 AM on April 10, 2026

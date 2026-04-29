@@ -13,7 +13,7 @@ public class Provider {
      */
     private String name;
     /**
-     * main.java.com.clinic.scheduler.model.Provider's medical specialty.
+     * Provider's medical specialty.
      */
     private String specialty;
     /**
@@ -24,10 +24,10 @@ public class Provider {
     /**
      * Construct a new provider in the system.
      *
-     * @param providerId of the main.java.com.clinic.scheduler.model.Provider
-     * @param name of the main.java.com.clinic.scheduler.model.Provider
-     * @param specialty of the  main.java.com.clinic.scheduler.model.Provider
-     * @param location of the main.java.com.clinic.scheduler.model.Provider
+     * @param providerId of the Provider
+     * @param name of the Provider
+     * @param specialty of the Provider
+     * @param location of the Provider
      */
     public Provider(int providerId, String name, String specialty, String location) {
         this.providerId = providerId;
@@ -116,10 +116,10 @@ public class Provider {
      *
      * @return string of provider's details
      */
-    // main.java.com.clinic.scheduler.model.Provider toString method
+    // Provider toString method
     @Override
     public String toString() {
-        return "main.java.com.clinic.scheduler.model.Provider{" +
+        return "Provider{" +
                 "providerId=" + providerId +
                 ", name='" + name + '\'' +
                 ", specialty='" + specialty + '\'' +

@@ -35,7 +35,7 @@ public class AppointmentManager {
     private int nextAppointmentId;
 
     /**
-     * Constructor for the main.java.com.clinic.scheduler.model.Appointment Manager.
+     * Constructor for the Appointment Manager.
      */
     public AppointmentManager() {
         this.patientDirectory = new HashMap<>();
@@ -44,7 +44,7 @@ public class AppointmentManager {
         this.nextAppointmentId = 1;
     }
 
-    // Validation methods for adding a main.java.com.clinic.scheduler.model.Patient and main.java.com.clinic.scheduler.model.Provider
+    // Validation methods for adding a Patient and Provider
     /**
      * Add a patient to the system.
      * Logic: 1. check if given arg is null, 2. check if already exists,
@@ -55,11 +55,11 @@ public class AppointmentManager {
     public void addPatient(Patient patient) {
         // Exception if patient object is null
         if (patient == null) {
-            throw new IllegalArgumentException("main.java.com.clinic.scheduler.model.Patient cannot be null.");
+            throw new IllegalArgumentException("Patient cannot be null.");
         }
         // Exception if patient's patientId object already exists
         if (patientDirectory.containsKey(patient.getPatientId())) {
-            throw new IllegalArgumentException("main.java.com.clinic.scheduler.model.Patient ID already exists.");
+            throw new IllegalArgumentException("Patient ID already exists.");
         }
         patientDirectory.put(patient.getPatientId(), patient);
     }
@@ -73,33 +73,33 @@ public class AppointmentManager {
     public void addProvider(Provider provider) {
         // Exception if provider object is null
         if (provider == null) {
-            throw new IllegalArgumentException("main.java.com.clinic.scheduler.model.Provider cannot be null.");
+            throw new IllegalArgumentException("Provider cannot be null.");
         }
         // Exception if provider's providerId already exists
         if (providerDirectory.containsKey(provider.getProviderId())) {
-            throw new IllegalArgumentException("main.java.com.clinic.scheduler.model.Provider ID already exists.");
+            throw new IllegalArgumentException("Provider ID already exists.");
         }
         providerDirectory.put(provider.getProviderId(), provider);
     }
 
     // Logic methods
     /**
-     * Primary method to handle the scheduling logic of a new main.java.com.clinic.scheduler.model.Appointment.
+     * Primary method to handle the scheduling logic of a new Appointment.
      *
-     * @param patientId unique ID of the main.java.com.clinic.scheduler.model.Patient that the main.java.com.clinic.scheduler.model.Appointment will be created with
-     * @param providerId unique ID of the main.java.com.clinic.scheduler.model.Provider that the main.java.com.clinic.scheduler.model.Appointment will be created with
-     * @param reason for the main.java.com.clinic.scheduler.model.Appointment
-     * @param startTime of the main.java.com.clinic.scheduler.model.Appointment (must be BEFORE endTime and AFTER current time)
-     * @param endTime of the main.java.com.clinic.scheduler.model.Appointment
-     * @return main.java.com.clinic.scheduler.model.Appointment object that was created if all conditions pass
+     * @param patientId unique ID of the Patient that the Appointment will be created with
+     * @param providerId unique ID of the Provider that the Appointment will be created with
+     * @param reason for the Appointment
+     * @param startTime of the Appointment (must be BEFORE endTime and AFTER current time)
+     * @param endTime of the Appointment
+     * @return Appointment object that was created if all conditions pass
      */
     public Appointment scheduleAppointment(int patientId, int providerId, String reason, LocalDateTime startTime, LocalDateTime endTime) {
-        // 1. main.java.com.clinic.scheduler.model.Patient and main.java.com.clinic.scheduler.model.Provider must exist, validate with patientId and providerId
+        // 1. Patient and Provider must exist, validate with patientId and providerId
         if (!patientDirectory.containsKey(patientId)) {
-            throw new IllegalArgumentException("Cannot schedule: main.java.com.clinic.scheduler.model.Patient ID: " + patientId + " does not exist.");
+            throw new IllegalArgumentException("Cannot schedule: Patient ID: " + patientId + " does not exist.");
         }
         if (!providerDirectory.containsKey(providerId)) {
-            throw new IllegalArgumentException("Cannot schedule: main.java.com.clinic.scheduler.model.Provider ID: " + providerId + " does not exist.");
+            throw new IllegalArgumentException("Cannot schedule: Provider ID: " + providerId + " does not exist.");
         }
         // 2. validate time (endTime > startTime) and startTime > current time
         if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
@@ -118,7 +118,7 @@ public class AppointmentManager {
             if (existingAppointments.getProvider().getProviderId() == providerId && existingAppointments.getStatus() != AppointmentStatus.CANCELLED) {
                 // If time range conflicts with given start and end times, throw exception
                 if (startTime.isBefore(existingAppointments.getEndDateTime()) && endTime.isAfter(existingAppointments.getStartDateTime())) {
-                    throw new IllegalStateException("Cannot schedule: main.java.com.clinic.scheduler.model.Provider has a conflicting appointment.");
+                    throw new IllegalStateException("Cannot schedule: Provider has a conflicting appointment.");
                 }
             }
         }
@@ -129,12 +129,12 @@ public class AppointmentManager {
     }
 
     /**
-     * Update the time that an main.java.com.clinic.scheduler.model.Appointment takes place.
+     * Update the time that an Appointment takes place.
      *
-     * @param appointmentId of the main.java.com.clinic.scheduler.model.Appointment that will be rescheduled
-     * @param startTime NEW start time of the main.java.com.clinic.scheduler.model.Appointment
-     * @param endTime NEW end time of the main.java.com.clinic.scheduler.model.Appointment
-     * @return main.java.com.clinic.scheduler.model.Appointment
+     * @param appointmentId of the Appointment that will be rescheduled
+     * @param startTime NEW start time of the Appointment
+     * @param endTime NEW end time of the Appointment
+     * @return Appointment
      */
     public Appointment rescheduleAppointment(int appointmentId, LocalDateTime startTime, LocalDateTime endTime) {
         // 1. Search/find appointment in appointmentList
@@ -148,7 +148,7 @@ public class AppointmentManager {
 
         // If appointment is not found, throw exception
         if (apptToBeMoved == null) {
-            throw new IllegalArgumentException("Cannot Reschedule: main.java.com.clinic.scheduler.model.Appointment ID " + appointmentId + " not found.");
+            throw new IllegalArgumentException("Cannot Reschedule: Appointment ID " + appointmentId + " not found.");
         }
         // 2. Check if appointment is allowed to be scheduled
         if (apptToBeMoved.getStatus() == AppointmentStatus.CANCELLED || apptToBeMoved.getStatus() == AppointmentStatus.COMPLETED) {
@@ -172,7 +172,7 @@ public class AppointmentManager {
             if (existingAppt.getProvider().getProviderId() == providerId && existingAppt.getStatus() != AppointmentStatus.CANCELLED) {
                 // Compare start and end times of appointment, throw exception if time range is violated.
                 if (startTime.isBefore(existingAppt.getEndDateTime()) && endTime.isAfter(existingAppt.getStartDateTime())) {
-                    throw new IllegalStateException("Cannot reschedule: main.java.com.clinic.scheduler.model.Provider has a conflicting appointment.");
+                    throw new IllegalStateException("Cannot reschedule: Provider has a conflicting appointment.");
                 }
             }
         }
@@ -185,9 +185,9 @@ public class AppointmentManager {
     /**
      * Handle the rescheduling logic of appointments.
      *
-     * @param appointmentId of the main.java.com.clinic.scheduler.model.Appointment's status that will be updated
-     * @param status NEW status of the main.java.com.clinic.scheduler.model.Appointment
-     * @return true if the main.java.com.clinic.scheduler.model.Appointment's status was successfully updated
+     * @param appointmentId of the Appointment's status that will be updated
+     * @param status NEW status of the Appointment
+     * @return true if the Appointment's status was successfully updated
      */
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
         // Search through list of appointment, get appointment that needs to be updated
@@ -199,7 +199,7 @@ public class AppointmentManager {
             }
         }
         if (apptToBeUpdated == null) {
-            throw new IllegalArgumentException("Cannot update status: main.java.com.clinic.scheduler.model.Appointment " + appointmentId + " not found.");
+            throw new IllegalArgumentException("Cannot update status: Appointment " + appointmentId + " not found.");
         }
 
         AppointmentStatus currentStatus = apptToBeUpdated.getStatus();
@@ -220,10 +220,10 @@ public class AppointmentManager {
 
     // Search Methods
     /**
-     * Retrieve all Appointments by main.java.com.clinic.scheduler.model.Patient ID.
+     * Retrieve all Appointments by Patient ID.
      *
      * @param patientId is the filter for the list of Appointments
-     * @return main.java.com.clinic.scheduler.model.Appointment(s) that match the provided patientId
+     * @return Appointment(s) that match the provided patientId
      */
     public List<Appointment> getAppointmentsByPatient(int patientId) {
         List<Appointment> results = new ArrayList<>();
@@ -236,10 +236,10 @@ public class AppointmentManager {
     }
 
     /**
-     * Retrieve all Appointments by main.java.com.clinic.scheduler.model.Provider ID.
+     * Retrieve all Appointments by Provider ID.
      *
      * @param providerId (ID) is the filter for the list of Appointments
-     * @return main.java.com.clinic.scheduler.model.Appointment(s) that match the provided providerId
+     * @return Appointment(s) that match the provided providerId
      */
     public List<Appointment> getAppointmentsByProvider(int providerId) {
         List<Appointment> results = new ArrayList<>();
@@ -256,7 +256,7 @@ public class AppointmentManager {
      *
      * @param startDate is the startDate of the range
      * @param endDate is the endDate of the range
-     * @return main.java.com.clinic.scheduler.model.Appointment(s) that match the provided date range.
+     * @return Appointment(s) that match the provided date range.
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
         List<Appointment> results = new ArrayList<>();
@@ -274,7 +274,7 @@ public class AppointmentManager {
      * Method to retrieve all Appointments by Status.
      *
      * @param status is the filter for the list of Appointments
-     * @return main.java.com.clinic.scheduler.model.Appointment(s) that match the provided Status
+     * @return Appointment(s) that match the provided Status
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
         List<Appointment> results = new ArrayList<>();
