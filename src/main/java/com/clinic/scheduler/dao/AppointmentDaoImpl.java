@@ -1,77 +1,85 @@
 package com.clinic.scheduler.dao;
 
 import com.clinic.scheduler.model.*;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Implementation of AppointmentDao interface. Directly interacts with database through SQL queries.
+ * Implementation of AppointmentDao interface.
+ * Directly interacts with database through SQL queries.
  */
 @Repository
 public class AppointmentDaoImpl implements AppointmentDao {
 
-    // Formatter for LocalDateTime
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    // Inject JDBC Template
     private final JdbcTemplate jdbcTemplate;
-
-    // Inject PatientDao and ProviderDao to reconstruct Patient/Provider objects
     private final PatientDao patientDao;
     private final ProviderDao providerDao;
 
-    // Initialize row mapper, construct when calling the class constructor.
     private final RowMapper<Appointment> appointmentRowMapper;
 
     /**
-     * Constructor for the AppointmentDao Implementation object.
+     * Constructor for AppointmentDaoImpl.
      *
-     * @param jdbcTemplate to inject
-     * @param patientDao to inject
-     * @param providerDao to inject
+     * @param jdbcTemplate JDBC template used for SQL queries
+     * @param patientDao DAO used to retrieve patient objects
+     * @param providerDao DAO used to retrieve provider objects
      */
-    public AppointmentDaoImpl(JdbcTemplate jdbcTemplate, PatientDao patientDao, ProviderDao providerDao) {
+    public AppointmentDaoImpl(JdbcTemplate jdbcTemplate,
+                              PatientDao patientDao,
+                              ProviderDao providerDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.patientDao = patientDao;
         this.providerDao = providerDao;
 
-        // Initialize RowMapper
         this.appointmentRowMapper = (rs, rowNum) -> {
-            // Sets row values in order of: appointmentId, startTime, endTime, status, reason, patientId, providerId
             int appointmentId = rs.getInt("AppointmentID");
             LocalDateTime startTime = LocalDateTime.parse(rs.getString("StartTime"), timeFormatter);
             LocalDateTime endTime = LocalDateTime.parse(rs.getString("EndTime"), timeFormatter);
             AppointmentStatus status = AppointmentStatus.valueOf(rs.getString("Status"));
             String reason = rs.getString("Reason");
 
-            // Retrieve foreign keys from Patient and Provider tables
             int patientId = rs.getInt("PatientID");
             int providerId = rs.getInt("ProviderID");
 
             Patient patient = patientDao.getPatientById(patientId);
             Provider provider = providerDao.getProviderById(providerId);
 
-            Appointment appt = new Appointment(appointmentId, patient, provider, startTime, endTime, reason);
-            appt.setStatus(status);
+            Appointment appointment = new Appointment(
+                    appointmentId,
+                    patient,
+                    provider,
+                    startTime,
+                    endTime,
+                    reason
+            );
 
-            return appt;
+            appointment.setStatus(status);
+
+            return appointment;
         };
     }
 
     /**
-     * Adds an Appointment object to the database.
+     * Adds an appointment to the database.
      *
-     * @param appointment to be added
+     * @param appointment appointment to create
      */
     @Override
     public void createAppointment(Appointment appointment) {
-        String sql = "INSERT INTO Appointment (StartTime, EndTime, Status, Reason, PatientID, ProviderID) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = """
+                INSERT INTO Appointment
+                (StartTime, EndTime, Status, Reason, PatientID, ProviderID)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+
         jdbcTemplate.update(sql,
                 appointment.getStartDateTime().format(timeFormatter),
                 appointment.getEndDateTime().format(timeFormatter),
@@ -83,22 +91,27 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Searches for an appointment by a specified ID.
+     * Gets an appointment by ID.
      *
-     * @param appointmentId to search for
-     * @return matching Appointment
+     * @param appointmentId appointment ID to search for
+     * @return matching appointment, or null if not found
      */
     @Override
     public Appointment getAppointmentById(int appointmentId) {
         String sql = "SELECT * FROM Appointment WHERE AppointmentID = ?";
-        return jdbcTemplate.queryForObject(sql, appointmentRowMapper, appointmentId);
+
+        try {
+            return jdbcTemplate.queryForObject(sql, appointmentRowMapper, appointmentId);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     /**
-     * Searches for appointments filtered by a Patient (patientId).
+     * Gets appointments by patient ID.
      *
-     * @param patientId of Patient
-     * @return list of matching appointments by Patient
+     * @param patientId patient ID
+     * @return list of matching appointments
      */
     @Override
     public List<Appointment> getAppointmentsByPatient(int patientId) {
@@ -107,10 +120,10 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Searches for appointments filtered by a Provider (providerId).
+     * Gets appointments by provider ID.
      *
-     * @param providerId of Provider
-     * @return list of matching appointments by Provider
+     * @param providerId provider ID
+     * @return list of matching appointments
      */
     @Override
     public List<Appointment> getAppointmentsByProvider(int providerId) {
@@ -119,17 +132,16 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Searches for appointments filtered by a given time range.
+     * Gets appointments within a date range.
      *
-     * @param startDate of range
-     * @param endDate of range
-     * @return list of appointments within time range
+     * @param startDate start date
+     * @param endDate end date
+     * @return list of appointments within the range
      */
     @Override
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
         String sql = "SELECT * FROM Appointment WHERE StartTime >= ? AND StartTime <= ?";
 
-        // Define START of day and END of day
         String startString = startDate.atStartOfDay().format(timeFormatter);
         String endString = endDate.atTime(23, 59, 59).format(timeFormatter);
 
@@ -137,10 +149,10 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Searches for appointments filtered by a given status.
+     * Gets appointments by status.
      *
-     * @param status of appointment to search for
-     * @return list of all appointments matching the given status
+     * @param status appointment status
+     * @return list of matching appointments
      */
     @Override
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
@@ -149,13 +161,18 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Update information for an appointment.
+     * Updates an appointment in the database.
      *
-     * @param appointment to update
+     * @param appointment appointment with updated information
      */
     @Override
     public void updateAppointment(Appointment appointment) {
-        String sql = "UPDATE Appointment SET StartTime = ?, EndTime = ?, Status = ?, Reason = ? WHERE AppointmentID = ?";
+        String sql = """
+                UPDATE Appointment
+                SET StartTime = ?, EndTime = ?, Status = ?, Reason = ?
+                WHERE AppointmentID = ?
+                """;
+
         jdbcTemplate.update(sql,
                 appointment.getStartDateTime().format(timeFormatter),
                 appointment.getEndDateTime().format(timeFormatter),
@@ -166,9 +183,9 @@ public class AppointmentDaoImpl implements AppointmentDao {
     }
 
     /**
-     * Delete an appointment from the database.
+     * Deletes an appointment from the database.
      *
-     * @param appointmentId of appointment to delete
+     * @param appointmentId appointment ID to delete
      */
     @Override
     public void deleteAppointment(int appointmentId) {

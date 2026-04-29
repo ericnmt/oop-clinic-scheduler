@@ -16,7 +16,7 @@ CREATE TABLE Provider (
     Name TEXT NOT NULL,
     Specialty TEXT NOT NULL,
     Location TEXT NOT NULL
-)
+);
 
 -- Appointment Table
 CREATE TABLE Appointment (
