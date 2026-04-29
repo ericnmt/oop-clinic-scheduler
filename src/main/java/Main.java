@@ -1,4 +1,4 @@
-import com.clinic.scheduler.service.AppointmentManager;
+/*import com.clinic.scheduler.service.AppointmentManager;
 import com.clinic.scheduler.model.*;
 //import dao.Database;
 
@@ -12,6 +12,7 @@ public class Main {
      *
      * @param args from stdin
      */
+/*
     public static void main(String[] args) {
         System.out.println("Checkpoint 1.5: Demo Appointment Scheduling");
 
@@ -79,3 +80,4 @@ public class Main {
         System.out.println("Retrieved " + johnDoeAppts.size() + " appointments for John Doe (ID 101)");
     }
 }
+*/
