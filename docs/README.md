@@ -1,6 +1,6 @@
 ## Description of changes made between Steps 1-5
 ### A. Entity Relation Diagram and Relational Schema Drafts
-Created the system's ER diagram to map out relational schema to be used in Part **B**. These can be found **[here](https://github.com/ericnmt/oop-clinic-scheduler/blob/main/docs/ER_Diagram_Schema.pdf)**
+Created the system's ER diagram to map out relational schema to be used in **Part B**. These can be found **[here](https://github.com/ericnmt/oop-clinic-scheduler/blob/main/docs/ER_Diagram_Schema.pdf)**
 
 ### B. Spring Boot Implementation
 Converted into a Maven-based Spring Boot application using the following configuration:
