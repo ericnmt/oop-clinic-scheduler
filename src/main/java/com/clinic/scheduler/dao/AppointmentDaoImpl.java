@@ -1,5 +1,8 @@
 package com.clinic.scheduler.dao;
-
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import com.clinic.scheduler.model.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -75,19 +78,28 @@ public class AppointmentDaoImpl implements AppointmentDao {
     @Override
     public void createAppointment(Appointment appointment) {
         String sql = """
-                INSERT INTO Appointment
-                (StartTime, EndTime, Status, Reason, PatientID, ProviderID)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """;
+            INSERT INTO Appointment
+            (StartTime, EndTime, Status, Reason, PatientID, ProviderID)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
 
-        jdbcTemplate.update(sql,
-                appointment.getStartDateTime().format(timeFormatter),
-                appointment.getEndDateTime().format(timeFormatter),
-                appointment.getStatus().name(),
-                appointment.getReason(),
-                appointment.getPatient().getPatientId(),
-                appointment.getProvider().getProviderId()
-        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, appointment.getStartDateTime().format(timeFormatter));
+            ps.setString(2, appointment.getEndDateTime().format(timeFormatter));
+            ps.setString(3, appointment.getStatus().name());
+            ps.setString(4, appointment.getReason());
+            ps.setInt(5, appointment.getPatient().getPatientId());
+            ps.setInt(6, appointment.getProvider().getProviderId());
+            return ps;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+        if (key != null) {
+            appointment.setAppointmentId(key.intValue());
+        }
     }
 
     /**
