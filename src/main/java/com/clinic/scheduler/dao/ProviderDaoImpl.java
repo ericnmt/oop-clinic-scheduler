@@ -12,7 +12,7 @@ import java.util.List;
  * Implementation of ProviderDao interface. Directly interacts with database through SQL queries.
  */
 @Repository
-public class ProviderDaoImpl implements ProviderDao{
+public class ProviderDaoImpl implements ProviderDao {
 
     // Inject JDBCTemplate
     private final JdbcTemplate jdbcTemplate;

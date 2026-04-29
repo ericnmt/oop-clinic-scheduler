@@ -2,8 +2,7 @@ package com.clinic.scheduler.dao;
 
 import com.clinic.scheduler.model.Appointment;
 import com.clinic.scheduler.model.AppointmentStatus;
-import com.clinic.scheduler.model.Patient;
-import com.clinic.scheduler.model.Provider;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public interface AppointmentDao {
     void createAppointment(Appointment appointment);
 
     // Read
-    Appointment getAppointmentById(int id);
+    Appointment getAppointmentById(int appointmentId);
     List<Appointment> getAppointmentsByPatient(int patientId);
     List<Appointment> getAppointmentsByProvider(int providerId);
     List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate);
@@ -25,7 +24,7 @@ public interface AppointmentDao {
     void updateAppointment(Appointment appointment);
 
     // Delete
-    void deleteAppointment(int id);
+    void deleteAppointment(int appointmentId);
 }
 
 
