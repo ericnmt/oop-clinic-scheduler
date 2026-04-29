@@ -1,9 +1,9 @@
-package model;
+package com.clinic.scheduler.model;
 
 import java.time.LocalDateTime;
 
 /**
- * Class to represent the model.Appointment object between a patient and provider.
+ * Class to represent the Appointment object between a patient and provider.
  */
 public class Appointment {
     /**
@@ -11,11 +11,11 @@ public class Appointment {
      */
     private int appointmentId;
     /**
-     * model.Patient associated with the appointment.
+     * Patient associated with the appointment.
      */
     private Patient patient;
     /**
-     * model.Provider associated with the appointment.
+     * Provider associated with the appointment.
      */
     private Provider provider;
     /**
@@ -36,15 +36,15 @@ public class Appointment {
     private String reason;
 
     /**
-     * Constructor for the model.Appointment object.
+     * Constructor for the Appointment object.
      *
-     * @param appointmentId of model.Appointment, unique
+     * @param appointmentId of Appointment, unique
      * @param patient who will be seen
      * @param provider who will see patient
-     * @param startDateTime of model.Appointment
-     * @param endDateTime of model.Appointment
-     * @param reason of model.Appointment
-     * model.AppointmentStatus is set to SCHEDULED by default until changed
+     * @param startDateTime of Appointment
+     * @param endDateTime of Appointment
+     * @param reason of Appointment
+     * AppointmentStatus is set to SCHEDULED by default until changed
      */
     public Appointment(int appointmentId, Patient patient, Provider provider, LocalDateTime startDateTime, LocalDateTime endDateTime, String reason) {
         this.appointmentId = appointmentId;
@@ -76,16 +76,16 @@ public class Appointment {
     }
 
     /**
-     * Get the model.Patient object of an model.Appointment.
+     * Get the Patient object of an Appointment.
      *
-     * @return the model.Patient of the appointment
+     * @return the Patient of the appointment
      */
     public Patient getPatient() {
         return patient;
     }
 
     /**
-     * Set the patient who's associated with an model.Appointment.
+     * Set the patient who's associated with a Appointment.
      *
      * @param patient associated with the appointment
      */
@@ -94,16 +94,16 @@ public class Appointment {
     }
 
     /**
-     * Get the model.Provider object of an model.Appointment.
+     * Get the Provider object of an Appointment.
      *
-     * @return the model.Provider of the appointment
+     * @return the Provider of the appointment
      */
     public Provider getProvider() {
         return provider;
     }
 
     /**
-     * Set the provider who's associated with an model.Appointment.
+     * Set the provider who's associated with a Appointment.
      *
      * @param provider associated with the appointment
      */
@@ -112,16 +112,16 @@ public class Appointment {
     }
 
     /**
-     * Get the start date of an model.Appointment.
+     * Get the start date of a Appointment.
      *
-     * @return the start date of the model.Appointment
+     * @return the start date of the Appointment
      */
     public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
 
     /**
-     * Set the start time of an model.Appointment.
+     * Set the start time of a Appointment.
      * Must be before endDateTime
      * Must be after current date time
      *
@@ -132,7 +132,7 @@ public class Appointment {
     }
 
     /**
-     * Get the start date of an model.Appointment.
+     * Get the start date of a Appointment.
      *
      * @return the start time of the appointment
      */
@@ -141,7 +141,7 @@ public class Appointment {
     }
 
     /**
-     * Set the end time of an model.Appointment.
+     * Set the end time of a Appointment.
      *
      * @param endDateTime of the appointment
      */
@@ -150,7 +150,7 @@ public class Appointment {
     }
 
     /**
-     * Get the status of an model.Appointment.
+     * Get the status of a Appointment.
      *
      * @return the status of the appointment
      */
@@ -159,7 +159,7 @@ public class Appointment {
     }
 
     /**
-     * Set the status of an model.Appointment.
+     * Set the status of a Appointment.
      *
      * @param status of the appointment
      */
@@ -168,7 +168,7 @@ public class Appointment {
     }
 
     /**
-     * Get the reason for the scheduling of an model.Appointment.
+     * Get the reason for the scheduling of a Appointment.
      *
      * @return the reason for the appointment
      */
@@ -177,7 +177,7 @@ public class Appointment {
     }
 
     /**
-     * Set the reason for the scheduling of an model.Appointment.
+     * Set the reason for the scheduling of a Appointment.
      *
      * @param reason for the appointment
      */
@@ -187,7 +187,7 @@ public class Appointment {
 
     // Methods
     /**
-     * Update the status of an existing model.Appointment.
+     * Update the status of an existing Appointment.
      *
      * @param newStatus of the appointment
      * @return true if the update was successful
@@ -199,7 +199,7 @@ public class Appointment {
     }
 
     /**
-     * Reschedule an existing model.Appointment to a new time.
+     * Reschedule an existing Appointment to a new time.
      *
      * @param newStart time of the appointment
      * @param newEnd time of the appointment
@@ -212,14 +212,14 @@ public class Appointment {
     }
 
     /**
-     * Returns an model.Appointment's information as a readable string.
+     * Returns a Appointment's information as a readable string.
      *
      * @return appointment details as a string
      */
     // TBA: Create readable format when returning appointment details
     @Override
     public String toString() {
-        return "model.Appointment{" +
+        return "Appointment{" +
                 "appointmentId=" + appointmentId +
                 ", patient=" + patient +
                 ", provider=" + provider +
