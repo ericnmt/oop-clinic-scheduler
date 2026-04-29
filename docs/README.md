@@ -60,5 +60,5 @@ The ```Patient```, ```Provider```, and ```Appointment``` DAO interfaces were add
 * Definition of the RowMapper function to map database result sets directly to POJOs (Java Object instances).
 * Formal definitions of each interface's abstract method, including their database SQL queries.
 
-As a result, this step fulfills keeping SQL usage behind the Spring Boot framework via the DAO pattern.
+As a result, this step fulfills keeping SQL usage hidden behind a framework alongside the DAO pattern.
 
