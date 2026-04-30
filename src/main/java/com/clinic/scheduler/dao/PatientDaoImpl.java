@@ -32,7 +32,7 @@ public class PatientDaoImpl implements PatientDao {
             .parseCaseInsensitive()
             .toFormatter(Locale.US);
 
-    // Maps DB row → Patient object
+    // Maps DB row TO Patient object
     private final RowMapper<Patient> patientRowMapper = (rs, rowNum) -> {
         int patientId = rs.getInt("PatientID");
         String name = rs.getString("Name");
