@@ -1,81 +1,152 @@
-import com.clinic.scheduler.service.AppointmentManager;
+package com.clinic.scheduler;
+
+import com.clinic.scheduler.dao.*;
 import com.clinic.scheduler.model.*;
-//import dao.Database;
+import com.clinic.scheduler.service.AppointmentManager;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Main {
-    /**
-     * main.Main method to demonstrate code functionality.
-     *
-     * @param args from stdin
-     */
-    public static void main(String[] args) {
-        System.out.println("Checkpoint 1.5: Demo Appointment Scheduling");
 
-        AppointmentManager manager = new AppointmentManager();
+    public static void main(String[] args) {
+        System.out.println("Final Project Demo: DAO-backed Appointment Scheduling");
+
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.sqlite.JDBC");
+        dataSource.setUrl("jdbc:sqlite:clinic.db");
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+        ResourceDatabasePopulator populator =
+                new ResourceDatabasePopulator(new ClassPathResource("schema.sql"));
+        populator.execute(dataSource);
+
+        PatientDao patientDao = new PatientDaoImpl(jdbcTemplate);
+        ProviderDao providerDao = new ProviderDaoImpl(jdbcTemplate);
+        AppointmentDao appointmentDao =
+                new AppointmentDaoImpl(jdbcTemplate, patientDao, providerDao);
+
+        AppointmentManager manager =
+                new AppointmentManager(patientDao, providerDao, appointmentDao);
 
         System.out.println("TEST 1: Valid entry creation");
-        // Create patients (2) and provider objects
-        Patient patient1 = new Patient(101, "John Doe", LocalDate.of(2000,01,01), "johndoe@example.com");
-        Patient patient2 = new Patient(102, "Jane Doe", LocalDate.of(1999,12,31), "jane.doe@example.com");
-        Provider provider1 = new Provider(701, "Dr. Smith", "Cardiology", "Room A-11");
 
-        // Add patients and provider to main.java.com.clinic.scheduler.service.AppointmentManager map
+        Patient patient1 = new Patient(101, "John Doe",
+                LocalDate.of(2000, 1, 1), "johndoe@example.com");
+
+        Patient patient2 = new Patient(102, "Jane Doe",
+                LocalDate.of(1999, 12, 31), "jane.doe@example.com");
+
+        Provider provider1 = new Provider(701, "Dr. Smith",
+                "Cardiology", "Room A-11");
+
         manager.addPatient(patient1);
         manager.addPatient(patient2);
         manager.addProvider(provider1);
-        System.out.println("Successfully added (2) patients and provider to the system.");
+
+        System.out.println("Successfully added patients and provider.");
 
         System.out.println("TEST 2: Valid scheduling");
-        // start: 9 AM, end: 10 AM on April 10, 2026
+
         LocalDateTime validStart = LocalDateTime.of(2027, 4, 10, 9, 0);
         LocalDateTime validEnd = LocalDateTime.of(2027, 4, 10, 10, 0);
 
-        Appointment appt1 = manager.scheduleAppointment(101, 701, "Routine checkup", validStart, validEnd);
-        System.out.println("Successfully scheduled Appointment ID: " + appt1.getAppointmentId() + " for patient ID 101");
+        Appointment appt1 = manager.scheduleAppointment(
+                101, 701, "Routine checkup", validStart, validEnd
+        );
 
-        System.out.println("TEST 3: Valid status update");
-        boolean updated = manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.CANCELLED);
-        if (updated) {
-            System.out.println("Successfully updated Appointment ID: " + appt1.getAppointmentId() + " to " + appt1.getStatus());
-        }
+        System.out.println("Successfully scheduled appointment.");
 
-        // Set appt1 status back to SCHEDULED for later use
-        manager.updateAppointmentStatus(appt1.getAppointmentId(), AppointmentStatus.SCHEDULED);
-
-        System.out.println("TEST 4: Invalid cases");
-        // Case A: Invalid time range
-        try {
-            System.out.println("Case A: end time BEFORE start time");
-            manager.scheduleAppointment(102, 701, "Consultation", validEnd, validStart);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Expected error: " + e.getMessage());
-        }
-        // Case B: Provider overlap
-        try {
-            System.out.println("Case B: provider overlap");
-            // start: 9:35 AM, end: 10:30 AM on April 10, 2026
-            LocalDateTime overlapStart = LocalDateTime.of(2027, 4, 10, 9, 30);
-            LocalDateTime overlapEnd = LocalDateTime.of(2027, 4, 10, 10, 30);
-            manager.scheduleAppointment(102, 701, "Consultation follow up", overlapStart, overlapEnd);
-        } catch (IllegalStateException e) {
-            System.out.println("Expected error: " + e.getMessage());
-        }
-        // Case C: Missing Entity
-        try {
-            System.out.println("Case C: Invalid patient ID");
-            manager.scheduleAppointment(999, 701, "Consultation", validStart, validEnd);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Expected error: " + e.getMessage());
-        }
-
-        System.out.println("TEST 5: Search methods");
-        manager.scheduleAppointment(101, 701, "Follow-up", validStart.plusDays(2), validEnd.plusDays(2));
+        System.out.println("TEST 3: Search appointments by patient");
 
         List<Appointment> johnDoeAppts = manager.getAppointmentsByPatient(101);
-        System.out.println("Retrieved " + johnDoeAppts.size() + " appointments for John Doe (ID 101)");
+        System.out.println("Retrieved " + johnDoeAppts.size()
+                + " appointments for John Doe.");
+
+        System.out.println("TEST 4: Update appointment status");
+
+        if (!johnDoeAppts.isEmpty()) {
+            Appointment savedAppt = johnDoeAppts.get(0);
+
+            manager.updateAppointmentStatus(savedAppt.getAppointmentId(), AppointmentStatus.CANCELLED);
+
+            System.out.println("Updated appointment "
+                    + savedAppt.getAppointmentId()
+                    + " to CANCELLED.");
+        } else {
+            System.out.println("No appointments found to update.");
+        }
+        System.out.println("TEST 5: Invalid time range");
+
+        try {
+            manager.scheduleAppointment(102, 701,
+                    "Consultation", validEnd, validStart);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Expected error: " + e.getMessage());
+        }
+
+        System.out.println("TEST 6: Invalid patient");
+
+        try {
+            manager.scheduleAppointment(999, 701,
+                    "Consultation", validStart.plusDays(1), validEnd.plusDays(1));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Expected error: " + e.getMessage());
+        }
+
+        System.out.println("TEST 7: Reschedule appointment");
+
+        Appointment appt2 = manager.scheduleAppointment(
+                102,
+                701,
+                "Follow-up",
+                validStart.plusDays(2),
+                validEnd.plusDays(2)
+        );
+
+        manager.rescheduleAppointment(
+                appt2.getAppointmentId(),
+                validStart.plusDays(3),
+                validEnd.plusDays(3)
+        );
+
+        System.out.println("Rescheduled appointment "
+                + appt2.getAppointmentId()
+                + " successfully.");
+
+        System.out.println("TEST 8: Update patient and provider");
+
+        Patient updatedPatient = new Patient(101, "John Doe Updated",
+                LocalDate.of(2000, 1, 1), "updatedjohn@example.com");
+
+        Provider updatedProvider = new Provider(701, "Dr. Smith Updated",
+                "Cardiology", "Room B-22");
+
+        manager.updatePatient(updatedPatient);
+        manager.updateProvider(updatedProvider);
+
+        System.out.println("Updated patient and provider successfully.");
+
+        System.out.println("TEST 9: Delete patient/provider constraints");
+
+        try {
+            manager.deletePatient(102);
+        } catch (IllegalStateException e) {
+            System.out.println("Expected delete patient error: " + e.getMessage());
+        }
+
+        try {
+            manager.deleteProvider(701);
+        } catch (IllegalStateException e) {
+            System.out.println("Expected delete provider error: " + e.getMessage());
+        }
+
+        System.out.println("Demo complete.");
     }
 }

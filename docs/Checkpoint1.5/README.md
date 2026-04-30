@@ -2,7 +2,7 @@
 ### Eric Johnson, Abimael Lozano, Manasi Movva
 
 ## What Was Implemented
-All business rules established in Checkpoint 1 (refer to ../docs) were implemented into the core logic class, service.AppointmentManager. Major changes include the use of exceptions in the case where a method fails (i.e. updateAppointmentStatus fails in the case of an invalid time range). Minor changes include the shift from 'Appointment' objects to 'appointmentId' integers in parameters of methods to simplify searching and preparation for backend development. In addition, Patient and Provider objects are stored in a Map to optimize search times, while Appointment objects are still stored in an array list.
+All business rules established in Checkpoint 1 (refer to ../docs) were implemented into the core logic class, AppointmentManager. Major changes include the use of exceptions in the case where a method fails (i.e. updateAppointmentStatus fails in the case of an invalid time range). Minor changes include the shift from 'Appointment' objects to 'appointmentId' integers in parameters of methods to simplify searching and preparation for backend development. In addition, Patient and Provider objects are stored in a Map to optimize search times, while Appointment objects are still stored in an array list.
 
 ** *
 
@@ -20,11 +20,11 @@ As per Checkpoint 1.5 requirements, the following features are not yet implement
 * **Frontend:** There is no graphical interface developed yet. Interaction currently only handled via the console.
 
 ## How to Run the Test
-We decided on going with a driver-based approach. All test are contained within the 'main.Main.java' file.
+We decided on going with a driver-based approach. All test are contained within the 'Main.java' file.
 
 TO run the tests:
 1. Compile all Java files in the 'src' directory
-2. Run the 'main.Main.java' class
+2. Run the 'Main.java' class
 
 The test driver will output to the console, demonstrating:
 1. The successful addition of entities to the manager.

@@ -1,288 +1,359 @@
 package com.clinic.scheduler.service;
 
+import com.clinic.scheduler.dao.AppointmentDao;
+import com.clinic.scheduler.dao.PatientDao;
+import com.clinic.scheduler.dao.ProviderDao;
 import com.clinic.scheduler.model.*;
-
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import com.clinic.scheduler.model.Appointment;
-import com.clinic.scheduler.model.AppointmentStatus;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * Class to represent the core logic of appointment scheduling and modification.
+ * Service layer for the clinic scheduling system.
+ * Handles business logic and delegates database operations to DAO classes.
  */
+@Service
 public class AppointmentManager {
-    /**
-     * hashMap dictionary for all Patients in memory.
-     */
-    private Map<Integer, Patient> patientDirectory;
-    /**
-     * hashMap dictionary for all Providers in memory.
-     */
-    private Map<Integer, Provider> providerDirectory;
-    /**
-     * List of all Appointments in memory.
-     */
-    private List<Appointment> appointmentList;
-    /**
-     * List of Appointments in memory.
-     */
-    private int nextAppointmentId;
+
+    private final PatientDao patientDao;
+    private final ProviderDao providerDao;
+    private final AppointmentDao appointmentDao;
 
     /**
-     * Constructor for the Appointment Manager.
+     * Constructor for DAO dependency injection.
+     *
+     * @param patientDao DAO for patient operations
+     * @param providerDao DAO for provider operations
+     * @param appointmentDao DAO for appointment operations
      */
-    public AppointmentManager() {
-        this.patientDirectory = new HashMap<>();
-        this.providerDirectory = new HashMap<>();
-        this.appointmentList = new ArrayList<>();
-        this.nextAppointmentId = 1;
+    public AppointmentManager(PatientDao patientDao,
+                              ProviderDao providerDao,
+                              AppointmentDao appointmentDao) {
+        this.patientDao = patientDao;
+        this.providerDao = providerDao;
+        this.appointmentDao = appointmentDao;
     }
 
-    // Validation methods for adding a Patient and Provider
     /**
-     * Add a patient to the system.
-     * Logic: 1. check if given arg is null, 2. check if already exists,
-     * 3. otherwise, add patient to directory map with their patientId as the key.
+     * Adds a patient to the database.
      *
-     * @param patient to be added to system
+     * @param patient patient to add
      */
     public void addPatient(Patient patient) {
-        // Exception if patient object is null
         if (patient == null) {
             throw new IllegalArgumentException("Patient cannot be null.");
         }
-        // Exception if patient's patientId object already exists
-        if (patientDirectory.containsKey(patient.getPatientId())) {
+
+        if (patientDao.getPatientById(patient.getPatientId()) != null) {
             throw new IllegalArgumentException("Patient ID already exists.");
         }
-        patientDirectory.put(patient.getPatientId(), patient);
+
+        patientDao.createPatient(patient);
     }
 
     /**
-     * Add a provider to the system.
-     * Uses the same logic to validate.
+     * Adds a provider to the database.
      *
-     * @param provider to be added to system
+     * @param provider provider to add
      */
     public void addProvider(Provider provider) {
-        // Exception if provider object is null
         if (provider == null) {
             throw new IllegalArgumentException("Provider cannot be null.");
         }
-        // Exception if provider's providerId already exists
-        if (providerDirectory.containsKey(provider.getProviderId())) {
+
+        if (providerDao.getProviderById(provider.getProviderId()) != null) {
             throw new IllegalArgumentException("Provider ID already exists.");
         }
-        providerDirectory.put(provider.getProviderId(), provider);
+
+        providerDao.createProvider(provider);
     }
 
-    // Logic methods
     /**
-     * Primary method to handle the scheduling logic of a new Appointment.
+     * Schedules a new appointment.
      *
-     * @param patientId unique ID of the Patient that the Appointment will be created with
-     * @param providerId unique ID of the Provider that the Appointment will be created with
-     * @param reason for the Appointment
-     * @param startTime of the Appointment (must be BEFORE endTime and AFTER current time)
-     * @param endTime of the Appointment
-     * @return Appointment object that was created if all conditions pass
+     * @param patientId patient ID
+     * @param providerId provider ID
+     * @param reason reason for appointment
+     * @param startTime appointment start time
+     * @param endTime appointment end time
+     * @return created appointment object
      */
-    public Appointment scheduleAppointment(int patientId, int providerId, String reason, LocalDateTime startTime, LocalDateTime endTime) {
-        // 1. Patient and Provider must exist, validate with patientId and providerId
-        if (!patientDirectory.containsKey(patientId)) {
-            throw new IllegalArgumentException("Cannot schedule: Patient ID: " + patientId + " does not exist.");
-        }
-        if (!providerDirectory.containsKey(providerId)) {
-            throw new IllegalArgumentException("Cannot schedule: Provider ID: " + providerId + " does not exist.");
-        }
-        // 2. validate time (endTime > startTime) and startTime > current time
-        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
-            throw new IllegalArgumentException("Cannot schedule: Invalid time range: " + endTime + " must be after " + startTime);
-        }
-        if (startTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Cannot schedule: Appointments cannot be made in the past.");
+    public Appointment scheduleAppointment(int patientId,
+                                           int providerId,
+                                           String reason,
+                                           LocalDateTime startTime,
+                                           LocalDateTime endTime) {
+
+        Patient patient = patientDao.getPatientById(patientId);
+        if (patient == null) {
+            throw new IllegalArgumentException("Cannot schedule: Patient ID " + patientId + " does not exist.");
         }
 
-        Patient patient = patientDirectory.get(patientId);
-        Provider provider = providerDirectory.get(providerId);
-        // 3. No overlapping appointments for provider
-        // Iterate through Appointments already scheduled
-        for (Appointment existingAppointments : appointmentList) {
-            // If an appointment already exists with a provider AND an overlapping appointment is NOT CANCELLED then validate time range
-            if (existingAppointments.getProvider().getProviderId() == providerId && existingAppointments.getStatus() != AppointmentStatus.CANCELLED) {
-                // If time range conflicts with given start and end times, throw exception
-                if (startTime.isBefore(existingAppointments.getEndDateTime()) && endTime.isAfter(existingAppointments.getStartDateTime())) {
-                    throw new IllegalStateException("Cannot schedule: Provider has a conflicting appointment.");
-                }
-            }
+        Provider provider = providerDao.getProviderById(providerId);
+        if (provider == null) {
+            throw new IllegalArgumentException("Cannot schedule: Provider ID " + providerId + " does not exist.");
         }
-        // If all validations pass, create/save new appointment object, return appointment
-        Appointment newAppt = new Appointment(nextAppointmentId++, patient, provider, startTime, endTime, reason);
-        appointmentList.add(newAppt);
-        return newAppt;
+
+        validateTimeRange(startTime, endTime);
+
+        if (hasProviderConflict(providerId, startTime, endTime, -1)) {
+            throw new IllegalStateException("Cannot schedule: Provider has a conflicting appointment.");
+        }
+
+        Appointment appointment = new Appointment(
+                0,
+                patient,
+                provider,
+                startTime,
+                endTime,
+                reason
+        );
+
+        appointmentDao.createAppointment(appointment);
+        return appointment;
     }
 
     /**
-     * Update the time that an Appointment takes place.
+     * Reschedules an existing appointment using DAO/database logic.
      *
-     * @param appointmentId of the Appointment that will be rescheduled
-     * @param startTime NEW start time of the Appointment
-     * @param endTime NEW end time of the Appointment
-     * @return Appointment
+     * @param appointmentId appointment ID
+     * @param startTime new start time
+     * @param endTime new end time
+     * @return updated appointment
      */
-    public Appointment rescheduleAppointment(int appointmentId, LocalDateTime startTime, LocalDateTime endTime) {
-        // 1. Search/find appointment in appointmentList
-        Appointment apptToBeMoved = null;
-        for (Appointment appt : appointmentList) {
-            if (appt.getAppointmentId() == appointmentId) {
-                apptToBeMoved = appt;
-                break;
-            }
+    public Appointment rescheduleAppointment(int appointmentId,
+                                             LocalDateTime startTime,
+                                             LocalDateTime endTime) {
+
+        Appointment appointment = appointmentDao.getAppointmentById(appointmentId);
+
+        if (appointment == null) {
+            throw new IllegalArgumentException("Cannot reschedule: Appointment ID " + appointmentId + " not found.");
         }
 
-        // If appointment is not found, throw exception
-        if (apptToBeMoved == null) {
-            throw new IllegalArgumentException("Cannot Reschedule: Appointment ID " + appointmentId + " not found.");
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED ||
+                appointment.getStatus() == AppointmentStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot reschedule completed or cancelled appointment.");
         }
-        // 2. Check if appointment is allowed to be scheduled
-        if (apptToBeMoved.getStatus() == AppointmentStatus.CANCELLED || apptToBeMoved.getStatus() == AppointmentStatus.COMPLETED) {
-            throw new IllegalStateException("Cannot reschedule an appointment that is Completed or Cancelled.");
+
+        validateTimeRange(startTime, endTime);
+
+        int providerId = appointment.getProvider().getProviderId();
+
+        if (hasProviderConflict(providerId, startTime, endTime, appointmentId)) {
+            throw new IllegalStateException("Cannot reschedule: Provider has a conflicting appointment.");
         }
-        // 3. Validate time
-        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
-            throw new IllegalArgumentException("Cannot reschedule: Start time must be strictly before the end time.");
-        }
-        if (startTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Cannot reschedule: Appointments cannot be moved to the past.");
-        }
-        // 4. Check for provider overlaps, ignore current (THIS) appt
-        int providerId = apptToBeMoved.getProvider().getProviderId();
-        for (Appointment existingAppt : appointmentList) {
-            // Skipping current appointment being rescheduled
-            if (existingAppt.getAppointmentId() == appointmentId) {
-                continue;
-            }
-            // Validate provider with providerId AND if appointment is NOT cancelled, validate time range w/ other appointment
-            if (existingAppt.getProvider().getProviderId() == providerId && existingAppt.getStatus() != AppointmentStatus.CANCELLED) {
-                // Compare start and end times of appointment, throw exception if time range is violated.
-                if (startTime.isBefore(existingAppt.getEndDateTime()) && endTime.isAfter(existingAppt.getStartDateTime())) {
-                    throw new IllegalStateException("Cannot reschedule: Provider has a conflicting appointment.");
-                }
-            }
-        }
-        // 5. Update times for appointment IF all checks are successful
-        apptToBeMoved.setStartDateTime(startTime);
-        apptToBeMoved.setEndDateTime(endTime);
-        return apptToBeMoved;
+
+        appointment.setStartDateTime(startTime);
+        appointment.setEndDateTime(endTime);
+
+        appointmentDao.updateAppointment(appointment);
+        return appointment;
     }
 
     /**
-     * Handle the rescheduling logic of appointments.
+     * Updates appointment status.
      *
-     * @param appointmentId of the Appointment's status that will be updated
-     * @param status NEW status of the Appointment
-     * @return true if the Appointment's status was successfully updated
+     * @param appointmentId appointment ID
+     * @param status new status
+     * @return true if status update succeeds
      */
     public boolean updateAppointmentStatus(int appointmentId, AppointmentStatus status) {
-        // Search through list of appointment, get appointment that needs to be updated
-        Appointment apptToBeUpdated = null;
-        for (Appointment appt : appointmentList) {
-            if (appt.getAppointmentId() == appointmentId) {
-                apptToBeUpdated = appt;
-                break;
-            }
-        }
-        if (apptToBeUpdated == null) {
-            throw new IllegalArgumentException("Cannot update status: Appointment " + appointmentId + " not found.");
+        Appointment appointment = appointmentDao.getAppointmentById(appointmentId);
+
+        if (appointment == null) {
+            throw new IllegalArgumentException("Cannot update status: Appointment not found.");
         }
 
-        AppointmentStatus currentStatus = apptToBeUpdated.getStatus();
+        AppointmentStatus currentStatus = appointment.getStatus();
 
-        // State transition logic, validate status limitations/rules
-        // Method fails when: Status is being changed from CANCELLED to COMPLETED and
-        // status is being changed from COMPLETED to SCHEDULED
-        if (currentStatus == AppointmentStatus.CANCELLED && status == AppointmentStatus.COMPLETED) {
+        if (currentStatus == AppointmentStatus.CANCELLED &&
+                status == AppointmentStatus.COMPLETED) {
             throw new IllegalStateException("A CANCELLED appointment cannot become COMPLETED.");
         }
-        if (currentStatus == AppointmentStatus.COMPLETED && status == AppointmentStatus.SCHEDULED) {
-            throw new IllegalStateException("A COMPLETED appointment cannot go back to SCHEDULED");
+
+        if (currentStatus == AppointmentStatus.COMPLETED &&
+                status == AppointmentStatus.SCHEDULED) {
+            throw new IllegalStateException("A COMPLETED appointment cannot go back to SCHEDULED.");
         }
 
-        apptToBeUpdated.setStatus(status);
+        appointment.setStatus(status);
+        appointmentDao.updateAppointment(appointment);
+
         return true;
     }
 
-    // Search Methods
     /**
-     * Retrieve all Appointments by Patient ID.
+     * Updates patient information.
      *
-     * @param patientId is the filter for the list of Appointments
-     * @return Appointment(s) that match the provided patientId
+     * @param patient updated patient
+     */
+    public void updatePatient(Patient patient) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null.");
+        }
+
+        if (patientDao.getPatientById(patient.getPatientId()) == null) {
+            throw new IllegalArgumentException("Cannot update: Patient does not exist.");
+        }
+
+        patientDao.updatePatient(patient);
+    }
+
+    /**
+     * Deletes a patient only if they have no active scheduled appointments.
+     *
+     * @param patientId patient ID
+     */
+    public void deletePatient(int patientId) {
+        if (patientDao.getPatientById(patientId) == null) {
+            throw new IllegalArgumentException("Cannot delete: Patient does not exist.");
+        }
+
+        List<Appointment> appointments = appointmentDao.getAppointmentsByPatient(patientId);
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getStatus() == AppointmentStatus.SCHEDULED) {
+                throw new IllegalStateException("Cannot delete patient with active appointments.");
+            }
+        }
+
+        patientDao.deletePatient(patientId);
+    }
+
+    /**
+     * Updates provider information.
+     *
+     * @param provider updated provider
+     */
+    public void updateProvider(Provider provider) {
+        if (provider == null) {
+            throw new IllegalArgumentException("Provider cannot be null.");
+        }
+
+        if (providerDao.getProviderById(provider.getProviderId()) == null) {
+            throw new IllegalArgumentException("Cannot update: Provider does not exist.");
+        }
+
+        providerDao.updateProvider(provider);
+    }
+
+    /**
+     * Deletes a provider only if they have no active scheduled appointments.
+     *
+     * @param providerId provider ID
+     */
+    public void deleteProvider(int providerId) {
+        if (providerDao.getProviderById(providerId) == null) {
+            throw new IllegalArgumentException("Cannot delete: Provider does not exist.");
+        }
+
+        List<Appointment> appointments = appointmentDao.getAppointmentsByProvider(providerId);
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getStatus() == AppointmentStatus.SCHEDULED) {
+                throw new IllegalStateException("Cannot delete provider with active appointments.");
+            }
+        }
+
+        providerDao.deleteProvider(providerId);
+    }
+
+    /**
+     * Gets appointments by patient ID.
+     *
+     * @param patientId patient ID
+     * @return matching appointments
      */
     public List<Appointment> getAppointmentsByPatient(int patientId) {
-        List<Appointment> results = new ArrayList<>();
-        for (Appointment appt : appointmentList) {
-            if (appt.getPatient().getPatientId() == patientId) {
-                results.add(appt);
-            }
-        }
-        return results;
+        return appointmentDao.getAppointmentsByPatient(patientId);
     }
 
     /**
-     * Retrieve all Appointments by Provider ID.
+     * Gets appointments by provider ID.
      *
-     * @param providerId (ID) is the filter for the list of Appointments
-     * @return Appointment(s) that match the provided providerId
+     * @param providerId provider ID
+     * @return matching appointments
      */
     public List<Appointment> getAppointmentsByProvider(int providerId) {
-        List<Appointment> results = new ArrayList<>();
-        for (Appointment appt : appointmentList) {
-            if (appt.getProvider().getProviderId() == providerId) {
-                results.add(appt);
-            }
-        }
-        return results;
+        return appointmentDao.getAppointmentsByProvider(providerId);
     }
 
     /**
-     * Retrieve all Appointments by a given date range.
+     * Gets appointments within a date range.
      *
-     * @param startDate is the startDate of the range
-     * @param endDate is the endDate of the range
-     * @return Appointment(s) that match the provided date range.
+     * @param startDate start date
+     * @param endDate end date
+     * @return appointments in date range
      */
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
-        List<Appointment> results = new ArrayList<>();
-        for (Appointment appt : appointmentList) {
-            LocalDate apptDate = appt.getStartDateTime().toLocalDate();
-            // Check if apptDate is ON or AFTER startDate and ON or BEFORE endDate
-            if (!apptDate.isBefore(startDate) && !apptDate.isAfter(endDate)) {
-                results.add(appt);
-            }
-        }
-        return results;
+        return appointmentDao.getAppointmentsByDateRange(startDate, endDate);
     }
 
     /**
-     * Method to retrieve all Appointments by Status.
+     * Gets appointments by appointment status.
      *
-     * @param status is the filter for the list of Appointments
-     * @return Appointment(s) that match the provided Status
+     * @param status appointment status
+     * @return matching appointments
      */
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
-        List<Appointment> results = new ArrayList<>();
-        for (Appointment appt : appointmentList) {
-            if (appt.getStatus() == status) {
-                results.add(appt);
+        return appointmentDao.getAppointmentsByStatus(status);
+    }
+
+    /**
+     * Validates that appointment start time is before end time
+     * and that the appointment is not scheduled in the past.
+     *
+     * @param startTime start time
+     * @param endTime end time
+     */
+    private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+        if (!startTime.isBefore(endTime)) {
+            throw new IllegalArgumentException("Invalid time range: start time must be before end time.");
+        }
+
+        if (startTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Appointments cannot be made in the past.");
+        }
+    }
+
+    /**
+     * Checks whether a provider has a conflicting appointment.
+     *
+     * @param providerId provider ID
+     * @param startTime proposed start time
+     * @param endTime proposed end time
+     * @param appointmentIdToIgnore appointment ID to ignore during rescheduling
+     * @return true if a conflict exists
+     */
+    private boolean hasProviderConflict(int providerId,
+                                        LocalDateTime startTime,
+                                        LocalDateTime endTime,
+                                        int appointmentIdToIgnore) {
+
+        List<Appointment> existingAppointments =
+                appointmentDao.getAppointmentsByProvider(providerId);
+
+        for (Appointment existing : existingAppointments) {
+            if (existing.getAppointmentId() == appointmentIdToIgnore) {
+                continue;
+            }
+
+            if (existing.getStatus() == AppointmentStatus.CANCELLED) {
+                continue;
+            }
+
+            boolean overlaps =
+                    startTime.isBefore(existing.getEndDateTime()) &&
+                            endTime.isAfter(existing.getStartDateTime());
+
+            if (overlaps) {
+                return true;
             }
         }
-        return results;
+
+        return false;
     }
 }

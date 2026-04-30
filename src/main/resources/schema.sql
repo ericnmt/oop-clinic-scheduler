@@ -16,7 +16,7 @@ CREATE TABLE Provider (
     Name TEXT NOT NULL,
     Specialty TEXT NOT NULL,
     Location TEXT NOT NULL
-)
+);
 
 -- Appointment Table
 CREATE TABLE Appointment (
@@ -29,4 +29,4 @@ CREATE TABLE Appointment (
     ProviderID INTEGER NOT NULL,
     FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
     FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID)
-)
+);
