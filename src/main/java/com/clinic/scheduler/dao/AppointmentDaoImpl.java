@@ -11,7 +11,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Implementation of AppointmentDao interface.
@@ -22,50 +24,62 @@ public class AppointmentDaoImpl implements AppointmentDao {
 
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    private final JdbcTemplate jdbcTemplate;
-    private final PatientDao patientDao;
-    private final ProviderDao providerDao;
+    // Handles multiple date formats
+    private final DateTimeFormatter multiFormatter = new DateTimeFormatterBuilder()
+            .appendPattern("[yyyy-MM-dd]")
+            .appendPattern("[dd/MM/yyyy]")
+            .appendPattern("[MMMM d, yyyy]")
+            .parseCaseInsensitive()
+            .toFormatter(Locale.US);
 
+    private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Appointment> appointmentRowMapper;
+
+    // Base query used for all read operations, involves JOIN as opposed to DAO injection
+    public static final String SELECT_JOIN_BASE = """
+            SELECT a.AppointmentID, a.StartTime, a.EndTime, a.Status, a.Reason,
+                   p.PatientID, p.Name AS PatientName, p.DateOfBirth, p.ContactInfo,
+                   pr.ProviderID, pr.Name AS ProviderName, pr.Specialty, pr.Location
+            FROM Appointment a
+            INNER JOIN Patient p ON a.PatientID = p.PatientID
+            INNER JOIN Provider pr ON a.ProviderID = pr.ProviderID
+            """;
 
     /**
      * Constructor for AppointmentDaoImpl.
      *
      * @param jdbcTemplate JDBC template used for SQL queries
-     * @param patientDao DAO used to retrieve patient objects
-     * @param providerDao DAO used to retrieve provider objects
      */
-    public AppointmentDaoImpl(JdbcTemplate jdbcTemplate,
-                              PatientDao patientDao,
-                              ProviderDao providerDao) {
+    public AppointmentDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.patientDao = patientDao;
-        this.providerDao = providerDao;
-
         this.appointmentRowMapper = (rs, rowNum) -> {
-            int appointmentId = rs.getInt("AppointmentID");
-            LocalDateTime startTime = LocalDateTime.parse(rs.getString("StartTime"), timeFormatter);
-            LocalDateTime endTime = LocalDateTime.parse(rs.getString("EndTime"), timeFormatter);
-            AppointmentStatus status = AppointmentStatus.valueOf(rs.getString("Status"));
-            String reason = rs.getString("Reason");
-
-            int patientId = rs.getInt("PatientID");
-            int providerId = rs.getInt("ProviderID");
-
-            Patient patient = patientDao.getPatientById(patientId);
-            Provider provider = providerDao.getProviderById(providerId);
-
-            Appointment appointment = new Appointment(
-                    appointmentId,
-                    patient,
-                    provider,
-                    startTime,
-                    endTime,
-                    reason
+            // Build Patient object from joined columns
+            Patient patient = new Patient(
+                    rs.getInt("PatientID"),
+                    rs.getString("PatientName"),
+                    LocalDate.parse(rs.getString("DateOfBirth"), multiFormatter),
+                    rs.getString("ContactInfo")
             );
 
-            appointment.setStatus(status);
+            // Build Provider object from joined columns
+            Provider provider = new Provider(
+                    rs.getInt("ProviderID"),
+                    rs.getString("ProviderName"),
+                    rs.getString("Specialty"),
+                    rs.getString("Location")
+            );
 
+            // Build the Appointment object using the entities defined above
+            Appointment appointment = new Appointment(
+                    rs.getInt("AppointmentID"),
+                    patient,
+                    provider,
+                    LocalDateTime.parse(rs.getString("StartTime"), timeFormatter),
+                    LocalDateTime.parse(rs.getString("EndTime"), timeFormatter),
+                    rs.getString("Reason")
+            );
+
+            appointment.setStatus(AppointmentStatus.valueOf(rs.getString("Status")));
             return appointment;
         };
     }
@@ -110,7 +124,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     @Override
     public Appointment getAppointmentById(int appointmentId) {
-        String sql = "SELECT * FROM Appointment WHERE AppointmentID = ?";
+        String sql = SELECT_JOIN_BASE + "WHERE a.AppointmentID = ?";
 
         try {
             return jdbcTemplate.queryForObject(sql, appointmentRowMapper, appointmentId);
@@ -127,7 +141,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     @Override
     public List<Appointment> getAppointmentsByPatient(int patientId) {
-        String sql = "SELECT * FROM Appointment WHERE PatientID = ?";
+        String sql = SELECT_JOIN_BASE + "WHERE a.PatientID = ?";
         return jdbcTemplate.query(sql, appointmentRowMapper, patientId);
     }
 
@@ -139,7 +153,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     @Override
     public List<Appointment> getAppointmentsByProvider(int providerId) {
-        String sql = "SELECT * FROM Appointment WHERE ProviderID = ?";
+        String sql = SELECT_JOIN_BASE + "WHERE a.ProviderId = ?";
         return jdbcTemplate.query(sql, appointmentRowMapper, providerId);
     }
 
@@ -152,7 +166,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     @Override
     public List<Appointment> getAppointmentsByDateRange(LocalDate startDate, LocalDate endDate) {
-        String sql = "SELECT * FROM Appointment WHERE StartTime >= ? AND StartTime <= ?";
+        String sql = SELECT_JOIN_BASE + "WHERE a.StartTime >= ? AND a.StartTime <= ?";
 
         String startString = startDate.atStartOfDay().format(timeFormatter);
         String endString = endDate.atTime(23, 59, 59).format(timeFormatter);
@@ -168,7 +182,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     @Override
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
-        String sql = "SELECT * FROM Appointment WHERE Status = ?";
+        String sql = SELECT_JOIN_BASE + "WHERE a.Status = ?";
         return jdbcTemplate.query(sql, appointmentRowMapper, status.name());
     }
 

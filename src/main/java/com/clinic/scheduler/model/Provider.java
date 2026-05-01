@@ -119,11 +119,9 @@ public class Provider {
     // Provider toString method
     @Override
     public String toString() {
-        return "Provider{" +
-                "providerId=" + providerId +
-                ", name='" + name + '\'' +
-                ", specialty='" + specialty + '\'' +
-                ", location='" + location + '\'' +
-                '}';
+        return  "Name: " + name +
+                " (ID " + providerId + ")" +
+                ", specialty: " + specialty +
+                ", location: " + location;
     }
 }
