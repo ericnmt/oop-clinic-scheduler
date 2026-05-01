@@ -218,10 +218,12 @@ public class Appointment {
      */
     @Override
     public String toString() {
-        return "------------------------------\n" +
+        return  "------------------------------\n" +
+                "NEW APPOINTMENT CREATED\n" +
+                "------------------------------\n" +
                 "Appointment ID : " + appointmentId + "\n" +
-                "Patient        : " + patient.getName() + "\n" +
-                "Provider       : " + provider.getName() + "\n" +
+                "Patient        : " + patient + "\n" +
+                "Provider       : " + provider + "\n" +
                 "Start Time     : " + startDateTime + "\n" +
                 "End Time       : " + endDateTime + "\n" +
                 "Status         : " + status + "\n" +

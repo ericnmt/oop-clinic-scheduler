@@ -119,11 +119,9 @@ public class Patient{
      */
     @Override
     public String toString() {
-        return "Patient{" +
-                "patientId='" + patientId + '\'' +
-                ", name='" + name + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", contactInfo='" + contactInfo + '\'' +
-                '}';
+        return  "Name: " + name +
+                " (ID " + patientId + ")" +
+                ", DOB: " + dateOfBirth +
+                ", contact info: " + contactInfo;
     }
 }
