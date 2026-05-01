@@ -1,10 +1,5 @@
--- REMOVE TO TEST DATA PERSISTENCE.
-DROP TABLE IF EXISTS Appointment;
-DROP TABLE IF EXISTS Patient;
-DROP TABLE IF EXISTS Provider;
-
 -- Patient Table
-CREATE TABLE Patient (
+CREATE TABLE IF NOT EXISTS Patient (
     PatientID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     DateOfBirth TEXT NOT NULL,
@@ -12,7 +7,7 @@ CREATE TABLE Patient (
 );
 
 -- Provider Table
-CREATE TABLE Provider (
+CREATE TABLE IF NOT EXISTS Provider (
     ProviderID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     Specialty TEXT NOT NULL,
@@ -20,7 +15,7 @@ CREATE TABLE Provider (
 );
 
 -- Appointment Table
-CREATE TABLE Appointment (
+CREATE TABLE IF NOT EXISTS Appointment (
     AppointmentID INTEGER PRIMARY KEY AUTOINCREMENT,
     StartTime TEXT NOT NULL,
     EndTime TEXT NOT NULL,
