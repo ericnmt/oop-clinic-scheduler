@@ -33,11 +33,9 @@ public class AppointmentDaoImpl implements AppointmentDao {
             .toFormatter(Locale.US);
 
     private final JdbcTemplate jdbcTemplate;
-    // private final PatientDao patientDao;
-    // private final ProviderDao providerDao;
     private final RowMapper<Appointment> appointmentRowMapper;
 
-    // Base query used for all read operations, involves joins as opposed to Dao injection.
+    // Base query used for all read operations, involves JOIN as opposed to DAO injection
     public static final String SELECT_JOIN_BASE = """
             SELECT a.AppointmentID, a.StartTime, a.EndTime, a.Status, a.Reason,
                    p.PatientID, p.Name AS PatientName, p.DateOfBirth, p.ContactInfo,
@@ -54,9 +52,6 @@ public class AppointmentDaoImpl implements AppointmentDao {
      */
     public AppointmentDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        // this.patientDao = patientDao;
-        // this.providerDao = providerDao;
-
         this.appointmentRowMapper = (rs, rowNum) -> {
             // Build Patient object from joined columns
             Patient patient = new Patient(
