@@ -216,17 +216,16 @@ public class Appointment {
      *
      * @return appointment details as a string
      */
-    // TBA: Create readable format when returning appointment details
     @Override
     public String toString() {
-        return "Appointment{" +
-                "appointmentId=" + appointmentId +
-                ", patient=" + patient +
-                ", provider=" + provider +
-                ", startDateTime=" + startDateTime +
-                ", endDateTime=" + endDateTime +
-                ", status=" + status +
-                ", reason='" + reason + '\'' +
-                '}';
+        return "------------------------------\n" +
+                "Appointment ID : " + appointmentId + "\n" +
+                "Patient        : " + patient.getName() + "\n" +
+                "Provider       : " + provider.getName() + "\n" +
+                "Start Time     : " + startDateTime + "\n" +
+                "End Time       : " + endDateTime + "\n" +
+                "Status         : " + status + "\n" +
+                "Reason         : " + reason + "\n" +
+                "------------------------------";
     }
 }
