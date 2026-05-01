@@ -25,4 +25,4 @@ CREATE TABLE IF NOT EXISTS Appointment (
     ProviderID INTEGER NOT NULL,
     FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
     FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID)
-    );
+);
