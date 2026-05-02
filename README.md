@@ -3,7 +3,7 @@ Eric Johnson, Manasi Movva, Abimael Lozano
 ## Description 
 
 ## Architectural Design
-We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testibility by isolating logic into different components, allowing for the strict enforcement of business logic.
+We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testability by isolating logic into different components, allowing for the strict enforcement of business logic.
 
 ### Layered Architecture
 The system follows a clean separation of concerns, organized into layers to ensure compatibility between components and preservation of application logic. The components of our system is split into the following schema: Model Layer, Service Layer, Data Access Layer (DAO), and Presentation Layer (via the CLI).
