@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS Patient (
     PatientID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     DateOfBirth TEXT NOT NULL,
-    ContactInfo TEXT
+    ContactInfo TEXT NOT NULL
 );
 
 -- Provider Table
