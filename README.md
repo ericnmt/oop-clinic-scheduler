@@ -55,17 +55,17 @@ The architecture ensures integrity and robustness via validation through the Ser
 * **Conflict Prevention**: The system design includes specific logic to prevent the overlap of appointments for providers. The Service Layer queries existing records and performs necessary checks before confirming new or rescheduled appointments.
 * **Status Transition Constraints**: The system enforces business logic for appointment statuses via enumerations. A "CANCELLED" appointment is architecturally unable to transition to "COMPLETED"
 
-## Update & Deletion Constraints
+### Update & Deletion Constraints
 * **Update Operations**: Implemented update functionality for Patient and Provider entities with proper validation checks before committing changes.
 * **Safe Deletion Logic**: Enforced constraints preventing deletion of patients or providers with active appointments.
 * **Referential Integrity**: Integrated database checks to avoid orphaned records and maintain consistent relationships between entities.
 
-## Database Setup Instructions
-DAO-Driven Operations: Replaced all in-memory logic with DAO-based database queries to ensure persistence and scalability.
-Scheduling Logic Refactor: Modified scheduleAppointment and rescheduleAppointment to use DAO methods for inserting, updating, and retrieving appointment data.
-Consistent Data Flow: Ensured all interactions between application logic and the database are routed through the Data Access Layer.
+### Database Setup Instructions
+* **DAO-Driven Operations**: Replaced all in-memory logic with DAO-based database queries to ensure persistence and scalability.
+* **Scheduling Logic Refactor**: Modified scheduleAppointment and rescheduleAppointment to use DAO methods for inserting, updating, and retrieving appointment data.
+* **Consistent Data Flow**: Ensured all interactions between application logic and the database are routed through the Data Access Layer.
 
-## Testing & Validation
+### Testing & Validation
 * **Service Layer Testing**: Verified correct execution of scheduling, rescheduling, and update operations through the service layer.
 * **Edge Case Handling**: Tested invalid time ranges, conflicting appointments, and invalid IDs to ensure robust validation.
 * **Status Updates**: Confirmed correct handling of appointment state changes such as CANCELLED.
