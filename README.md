@@ -1,6 +1,9 @@
 # oop-clinic-scheduler
 Eric Johnson, Manasi Movva, Abimael Lozano
-## Description 
+## Description
+The Clinic Scheduler is a Spring Boot application that manages patients, providers, and appointments through a structured and reliable scheduling system. It supports creating, updating, rescheduling, and canceling appointments while enforcing key business rules such as preventing time conflicts and maintaining valid status transitions.
+
+The project was built to demonstrate object-oriented design and real-world backend development by moving from in-memory data handling to a persistent, database-driven system. It uses a layered architecture with a service layer for business logic and DAO components for database interaction via Spring Boot’s JdbcTemplate. Data is stored in a SQLite database, ensuring persistence across application runs.
 
 ## Architectural Design
 We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testability by isolating logic into different components, allowing for the strict enforcement of business logic.A key contribution to this design was the refactoring of the core architecture to fully adopt a service-layer + DAO pattern, replacing earlier in-memory implementations with database-backed operations.
