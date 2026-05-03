@@ -3,7 +3,7 @@ Eric Johnson, Manasi Movva, Abimael Lozano
 ## Description 
 
 ## Architectural Design
-We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testability by isolating logic into different components, allowing for the strict enforcement of business logic.
+We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testability by isolating logic into different components, allowing for the strict enforcement of business logic.A key contribution to this design was the refactoring of the core architecture to fully adopt a service-layer + DAO pattern, replacing earlier in-memory implementations with database-backed operations.
 
 ### Layered Architecture
 The system follows a clean separation of concerns, organized into layers to ensure compatibility between components and preservation of application logic. The components of our system is split into the following schema: Model Layer, Service Layer, Data Access Layer (DAO), and Presentation Layer (via the CLI).
@@ -55,7 +55,20 @@ The architecture ensures integrity and robustness via validation through the Ser
 * **Conflict Prevention**: The system design includes specific logic to prevent the overlap of appointments for providers. The Service Layer queries existing records and performs necessary checks before confirming new or rescheduled appointments.
 * **Status Transition Constraints**: The system enforces business logic for appointment statuses via enumerations. A "CANCELLED" appointment is architecturally unable to transition to "COMPLETED"
 
+## Update & Deletion Constraints
+* **Update Operations**: Implemented update functionality for Patient and Provider entities with proper validation checks before committing changes.
+* **Safe Deletion Logic**: Enforced constraints preventing deletion of patients or providers with active appointments.
+* **Referential Integrity**: Integrated database checks to avoid orphaned records and maintain consistent relationships between entities.
+
 ## Database Setup Instructions
+DAO-Driven Operations: Replaced all in-memory logic with DAO-based database queries to ensure persistence and scalability.
+Scheduling Logic Refactor: Modified scheduleAppointment and rescheduleAppointment to use DAO methods for inserting, updating, and retrieving appointment data.
+Consistent Data Flow: Ensured all interactions between application logic and the database are routed through the Data Access Layer.
+
+## Testing & Validation
+* **Service Layer Testing**: Verified correct execution of scheduling, rescheduling, and update operations through the service layer.
+* **Edge Case Handling**: Tested invalid time ranges, conflicting appointments, and invalid IDs to ensure robust validation.
+* **Status Updates**: Confirmed correct handling of appointment state changes such as CANCELLED.
 
 ## How To Run
 
