@@ -71,5 +71,43 @@ The architecture ensures integrity and robustness via validation through the Ser
 * **Status Updates**: Confirmed correct handling of appointment state changes such as CANCELLED.
 
 ## How To Run
+With the use of the Spring Boot framework, setup and running the Clinic Scheduler application is easy and can be done by following the steps below.
+## IntelliJ Instructions
+1. Copy the clone path in this repository by navigating to ```Code``` > (Select the Copy icon for HTTPS to copy the URL)
+2. Open IntelliJ
+3. Navigate to ```File``` > ```New Project from Version Control```
+4. Paste the copied URL into the ```URL``` box and specify the preferred location for the repository on your device
+5. Select ```Clone```
+6. Open the project
+7. Within the project's directory contents, navigate to ```src``` > ```main``` > ```com.clinic.scheduler``` > ```SchedulerApplication```
+8. Select the green run icon to run the program
+9. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
+
+## VSCode Instructions
+1. Copy the clone path in this repository by navigating to ```Code``` > (Select the Copy icon for HTTPS to copy the URL)
+2. Open VSCode
+3. Navigate to the ```Source Control``` tab
+4. Select ```Clone Repository```
+5. A box should appear to enter the repository URL, paste the URL in this box and specify the preferred location for the repository on your device
+6. Open the repository and select ```Yes, I trust the authors```
+7. In the project's directory conents, navigate to ```src\main``` > ```java``` > ```SchedulerApplication.java```
+8. Navigate to the ```Run``` tab, select the green run icon to run the application
+9. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
+
+## Command Line Instructions
+1. Navigate to the preferred location on your device to clone the repository
+2. Clone the repository
+```BASH
+git clone https://github.com/ericnmt/oop-clinic-scheduler.git
+```
+3. Navigate to the newly cloned repository
+```BASH
+cd oop-clinic-scheduler
+```
+3. Compile, run, and boot the application via Maven
+```BASH
+./mvnw spring-boot:run
+```
+4. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
 
 ## Example Usages & Cases
