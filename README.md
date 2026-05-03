@@ -17,6 +17,8 @@ Data is managed through a model that utilizes a file-based relational database.
 * **Relational Database Integration**: We settled with using the file-based SQLite framework for the relational database. This choice provides persistence across application restarts without the overhead of a dedicated database server.
 * **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. We utilize DDL to create these structures:
 ```SQL
+--- schema.sql
+--- Patient Table
 CREATE TABLE IF NOT EXISTS Patient (
     PatientID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
