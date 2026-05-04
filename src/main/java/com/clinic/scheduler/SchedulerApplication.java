@@ -351,9 +351,9 @@ public class SchedulerApplication implements CommandLineRunner {
 			System.out.println("------------------------------");
 			System.out.println("Appointment ID : " + a.getAppointmentId());
 			System.out.println("Patient        : " + a.getPatient().getName()
-					+ " (ID: " + a.getPatient().getPatientId() + ")");
+					+ " (ID: " + a.getPatient().getPatientId() + "), active: " + a.getPatient().isActive());
 			System.out.println("Provider       : " + a.getProvider().getName()
-					+ " (" + a.getProvider().getSpecialty() + ")");
+					+ " (" + a.getProvider().getSpecialty() + "), active: " + a.getProvider().isActive() );
 			System.out.println("Location       : " + a.getProvider().getLocation());
 			System.out.println("Start Time     : " + a.getStartDateTime());
 			System.out.println("End Time       : " + a.getEndDateTime());
