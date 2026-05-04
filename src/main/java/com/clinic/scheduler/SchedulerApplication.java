@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -118,18 +119,21 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Adds a new patient.
 	 */
 	private void addPatient() {
-		System.out.print("Patient ID: ");
-		int id = Integer.parseInt(scanner.nextLine());
+		// Read and parse Patient's ID
+		int id = readInt("Patient ID");
 
+		// Read and collect Patient's name
 		System.out.print("Name: ");
 		String name = scanner.nextLine();
 
-		System.out.print("Date of Birth YYYY-MM-DD: ");
-		LocalDate dateOfBirth = LocalDate.parse(scanner.nextLine());
+		// Read and parse Patient's Date of Birth
+		LocalDate dateOfBirth = readLocalDate("Date of Birth YYYY-MM-DD: ");
 
+		// Read and collect Patient's contact info
 		System.out.print("Contact Info: ");
 		String contactInfo = scanner.nextLine();
 
+		// Instantiate Patient, add to database.
 		Patient patient = new Patient(id, name, dateOfBirth, contactInfo);
 		appointmentManager.addPatient(patient);
 
@@ -140,8 +144,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Adds a new provider.
 	 */
 	private void addProvider() {
-		System.out.print("Provider ID: ");
-		int id = Integer.parseInt(scanner.nextLine());
+		int id = readInt("Provider ID");
 
 		System.out.print("Name: ");
 		String name = scanner.nextLine();
@@ -162,21 +165,19 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Schedules a new appointment.
 	 */
 	private void scheduleAppointment() {
-		System.out.print("Patient ID: ");
-		int patientId = Integer.parseInt(scanner.nextLine());
+		// Read and parse Patient and Provider's ID
+		int patientId = readInt("Patient ID");
+		int providerId = readInt("Provider ID");
 
-		System.out.print("Provider ID: ");
-		int providerId = Integer.parseInt(scanner.nextLine());
-
+		// Read and collect reason
 		System.out.print("Reason: ");
 		String reason = scanner.nextLine();
 
-		System.out.print("Start Date/Time YYYY-MM-DDTHH:MM: ");
-		LocalDateTime start = LocalDateTime.parse(scanner.nextLine());
+		// Read and parse Start/End Time
+		LocalDateTime start = readLocalDateTime("Start Date/Time YYYY-MM-DDTHH:MM");
+		LocalDateTime end = readLocalDateTime("End Date/Time YYYY-MM-DDTHH:MM");
 
-		System.out.print("End Date/Time YYYY-MM-DDTHH:MM: ");
-		LocalDateTime end = LocalDateTime.parse(scanner.nextLine());
-
+		// Instantiate appointment object, save to database
 		Appointment appointment = appointmentManager.scheduleAppointment(
 				patientId,
 				providerId,
@@ -193,8 +194,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Retrieves appointments for a specific patient.
 	 */
 	private void viewAppointmentsByPatient() {
-		System.out.print("Patient ID: ");
-		int patientId = Integer.parseInt(scanner.nextLine());
+		int patientId = readInt("Patient ID");
 
 		List<Appointment> appointments =
 				appointmentManager.getAppointmentsByPatient(patientId);
@@ -206,8 +206,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Retrieves appointments for a specific provider.
 	 */
 	private void viewAppointmentsByProvider() {
-		System.out.print("Provider ID: ");
-		int providerId = Integer.parseInt(scanner.nextLine());
+		int providerId = readInt("Provider ID");
 
 		List<Appointment> appointments =
 				appointmentManager.getAppointmentsByProvider(providerId);
@@ -219,11 +218,8 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Retrieves appointments within a date range.
 	 */
 	private void viewAppointmentsByDateRange() {
-		System.out.print("Start Date YYYY-MM-DD: ");
-		LocalDate startDate = LocalDate.parse(scanner.nextLine());
-
-		System.out.print("End Date YYYY-MM-DD: ");
-		LocalDate endDate = LocalDate.parse(scanner.nextLine());
+		LocalDate startDate = readLocalDate("Start Date YYYY-MM-DD");
+		LocalDate endDate = readLocalDate("End Date YYYY-MM-DD");
 
 		List<Appointment> appointments =
 				appointmentManager.getAppointmentsByDateRange(startDate, endDate);
@@ -249,14 +245,11 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Reschedules an existing appointment.
 	 */
 	private void rescheduleAppointment() {
-		System.out.print("Appointment ID: ");
-		int appointmentId = Integer.parseInt(scanner.nextLine());
+		int appointmentId = readInt("Appointment ID");
 
-		System.out.print("New Start Date/Time YYYY-MM-DDTHH:MM: ");
-		LocalDateTime start = LocalDateTime.parse(scanner.nextLine());
-
-		System.out.print("New End Date/Time YYYY-MM-DDTHH:MM: ");
-		LocalDateTime end = LocalDateTime.parse(scanner.nextLine());
+		// Read and parse new start and end times.
+		LocalDateTime start = readLocalDateTime("New Start Date/Time YYYY-MM-DDTHH:MM");
+		LocalDateTime end = readLocalDateTime("New End Date/Time YYYY-MM-DDTHH:MM");
 
 		appointmentManager.rescheduleAppointment(appointmentId, start, end);
 
@@ -267,8 +260,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Updates an appointment status.
 	 */
 	private void updateAppointmentStatus() {
-		System.out.print("Appointment ID: ");
-		int appointmentId = Integer.parseInt(scanner.nextLine());
+		int appointmentId = readInt("Appointment ID");
 
 		System.out.print("Status SCHEDULED, COMPLETED, or CANCELLED: ");
 		AppointmentStatus status =
@@ -283,14 +275,12 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Updates an existing patient.
 	 */
 	private void updatePatient() {
-		System.out.print("Patient ID: ");
-		int id = Integer.parseInt(scanner.nextLine());
+		int id = readInt("Patient ID");
 
 		System.out.print("Updated Name: ");
 		String name = scanner.nextLine();
 
-		System.out.print("Updated Date of Birth YYYY-MM-DD: ");
-		LocalDate dateOfBirth = LocalDate.parse(scanner.nextLine());
+		LocalDate dateOfBirth = readLocalDate("Updated Date of Birth YYYY-MM-DD");
 
 		System.out.print("Updated Contact Info: ");
 		String contactInfo = scanner.nextLine();
@@ -305,8 +295,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Updates an existing provider.
 	 */
 	private void updateProvider() {
-		System.out.print("Provider ID: ");
-		int id = Integer.parseInt(scanner.nextLine());
+		int id = readInt("Provider ID");
 
 		System.out.print("Updated Name: ");
 		String name = scanner.nextLine();
@@ -327,8 +316,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Deletes a patient if allowed by business rules.
 	 */
 	private void deletePatient() {
-		System.out.print("Patient ID: ");
-		int patientId = Integer.parseInt(scanner.nextLine());
+		int patientId = readInt("Patient ID");
 
 		appointmentManager.deletePatient(patientId);
 
@@ -339,8 +327,7 @@ public class SchedulerApplication implements CommandLineRunner {
 	 * Deletes a provider if allowed by business rules.
 	 */
 	private void deleteProvider() {
-		System.out.print("Provider ID: ");
-		int providerId = Integer.parseInt(scanner.nextLine());
+		int providerId = readInt("Provider ID");
 
 		appointmentManager.deleteProvider(providerId);
 
@@ -373,6 +360,54 @@ public class SchedulerApplication implements CommandLineRunner {
 			System.out.println("Status         : " + a.getStatus());
 			System.out.println("Reason         : " + a.getReason());
 			System.out.println("------------------------------");
+		}
+	}
+
+    /**
+	 * Prompts the user for a date until a valid format is entered.
+     * @param prompt that is printed to the user
+     * @return the parsed LocalDate object
+     */
+	private LocalDate readLocalDate(String prompt) {
+		while (true) {
+			System.out.print(prompt + " (YYYY-MM-DD): ");
+			try {
+				return LocalDate.parse(scanner.nextLine());
+			} catch (DateTimeParseException e) {
+				System.out.println(" Invalid format. Use YYYY-MM-DD.");
+			}
+		}
+	}
+
+    /**
+	 * Prompts the user for a date and time until a valid format is entered.
+     * @param prompt that is printer to the user
+     * @return the parsed LocalDateTime object
+     */
+	private LocalDateTime readLocalDateTime(String prompt) {
+		while (true) {
+			System.out.print(prompt + " (YYYY-MM-DDTHH:MM): ");
+			try {
+				return LocalDateTime.parse(scanner.nextLine());
+			} catch (DateTimeParseException e) {
+				System.out.println(" Invalid format. Use YYYY-MM-DDTHH:MM.");
+			}
+		}
+	}
+
+    /**
+	 * Prompts the user for an integer until a valid number is entered.
+     * @param prompt that is printed to the user
+     * @return the parsed Integer object
+     */
+	private int readInt(String prompt) {
+		while (true) {
+			System.out.print(prompt + ": ");
+			try {
+				return Integer.parseInt(scanner.nextLine());
+			} catch (NumberFormatException e) {
+				System.out.println(" Invalid format. Please enter a numeric ID.");
+			}
 		}
 	}
 }
