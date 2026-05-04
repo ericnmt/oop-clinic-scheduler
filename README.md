@@ -84,7 +84,7 @@ With the use of the Spring Boot framework, setup and running the Clinic Schedule
 6. Open the project
 7. Within the project's directory contents, navigate to ```src``` > ```main``` > ```com.clinic.scheduler``` > ```SchedulerApplication```
 8. Select the green run icon to run the program
-9. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
+9. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
 ## VSCode Instructions
 1. Copy the clone path in this repository by navigating to ```Code``` > (Select the Copy icon for HTTPS to copy the URL)
@@ -95,7 +95,7 @@ With the use of the Spring Boot framework, setup and running the Clinic Schedule
 6. Open the repository and select ```Yes, I trust the authors```
 7. In the project's directory conents, navigate to ```src\main``` > ```java``` > ```SchedulerApplication.java```
 8. Navigate to the ```Run``` tab, select the green run icon to run the application
-9. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
+9. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
 ## Command Line Instructions
 1. Navigate to the preferred location on your device to clone the repository
@@ -111,12 +111,148 @@ cd oop-clinic-scheduler
 ```BASH
 ./mvnw spring-boot:run
 ```
-4. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
+4. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
 ## Example Usages & Cases
-### Create entity
+The Application prints the following menu to the CLI:
+```BASH
+Clinic Appointment Scheduler
+1. Add Patient
+2. Add Provider
+3. Schedule Appointment
+4. View Appointments by Patient
+5. View Appointments by Provider
+6. View Appointments by Date Range
+7. View Appointments by Status
+8. Reschedule Appointment
+9. Update Appointment Status
+10. Update Patient
+11. Update Provider
+12. Delete Patient
+13. Delete Provider
+0. Exit
+```
+### Create Entities
+Demonstration of successful instantiation and persistence of entities
+1. **Adding valid patients**
+```BASH
+Choice: 1           // Add Patient
+Patient ID: 101
+Name: Jane Doe
+Date of Birth YYYY-MM-DD: 2000-01-01
+Contact Info: jane.doe@example.com
+Patient added successfully.
+
+Choice: 1           // Add Patient
+Patient ID: 102
+Name: Bob Jones
+Date of Birth YYYY-MM-DD: 1985-10-22
+Contact Info: 555-555-3251
+Patient added successfully.
+```
+Creates the following entries into the database:
+```SQL
+INSERT INTO "Patient" VALUES (101,'Jane Doe','2000-01-01','jane.doe@example.com');
+INSERT INTO "Patient" VALUES (102,'Bob Jones','1985-10-22','555-555-3251');
+```
+2. **Adding valid providers**
+```BASH
+Choice: 2           // Add Provider
+Provider ID: 1
+Name: Dr. John Smith
+Specialty: Cardiology
+Location: Room 101
+Provider added successfully.
+
+Choice: 2           // Add Provider
+Provider ID: 2
+Name: Dr. Gregory Watson
+Specialty: Neurology
+Location: Room 102
+Provider added successfully.
+```
+Creates the following entries into the database:
+```SQL
+INSERT INTO "Provider" VALUES (1,'Dr. John Smith','Cardiology','Room 101');
+INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102');
+```
 
 ### Valid Operations
+Demonstration of core scheduling mechanics under normal conditions
+1. **Scheduling a valid appointment**
+```BASH
+Choice: 3           // Schedule Appointment
+Patient ID: 101
+Provider ID: 2
+Reason: Post-operation checkup
+Start Date/Time YYYY-MM-DDTHH:MM: 2026-06-10T08:00
+End Date/Time YYYY-MM-DDTHH:MM: 2026-06-10T09:00
+Appointment scheduled successfully:
+------------------------------
+NEW APPOINTMENT CREATED
+------------------------------
+Appointment ID : 1
+Patient        : Name: Jane Doe (ID 101), DOB: 2000-01-01, contact info: jane.doe@example.com
+Provider       : Name: Dr. Gregory Watson (ID 2), specialty: Neurology, location: Room 102
+Start Time     : 2026-06-10T08:00
+End Time       : 2026-06-10T09:00
+Status         : SCHEDULED
+Reason         : Post-operation checkup
+------------------------------
+```
+Creates the following entry into the database:
+```SQL
+INSERT INTO "Appointment" VALUES (1,'2026-06-10T08:00:00','2026-06-10T09:00:00','SCHEDULED','Post-operation checkup',101,2);
+```
+2. **Rescheduling an appointment**
+```BASH
+Choice: 8           // Reschedule Appointment
+Appointment ID: 1
+New Start Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T08:00
+New End Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T09:00
+Appointment rescheduled successfully.
+```
+Verifying the appointment has successfully been rescheduled:
+```BASH
+Choice: 4           // View Appointments by Patient
+Patient ID: 101
+
+=== Appointments ===
+------------------------------
+Appointment ID : 1
+Patient        : Jane Doe (ID: 101)
+Provider       : Dr. Gregory Watson (Neurology)
+Location       : Room 102
+Start Time     : 2026-05-31T08:00
+End Time       : 2026-05-31T09:00
+Status         : SCHEDULED
+Reason         : Post-operation checkup
+------------------------------
+```
+3. **Updating Appointment Status**
+```BASH
+Choice: 9           // Update Appointment Status
+Appointment ID: 1
+Status SCHEDULED, COMPLETED, or CANCELLED: CANCELLED
+Appointment status updated successfully.
+```
+Verifying the appointment's status has successfully been changed from "SCHEDULED" to "CANCELLED"
+```BASH
+Choice: 4           // View Appointments by Patient
+Patient ID: 101
+
+=== Appointments ===
+------------------------------
+Appointment ID : 1
+Patient        : Jane Doe (ID: 101)
+Provider       : Dr. Gregory Watson (Neurology)
+Location       : Room 102
+Start Time     : 2026-05-31T08:00
+End Time       : 2026-05-31T09:00
+Status         : CANCELLED
+Reason         : Post-operation checkup
+------------------------------
+```
 
 ### Business Rule Violations 
 
