@@ -21,12 +21,13 @@ Data is managed through a model that utilizes a file-based relational database.
 * **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. Note that the ```PRAGMA foreign_keys=ON``` option in the ```application.properties``` enforces database engine to strictly reference foreign keys. This is further represented below, where the existence of appointments also depends on the existence of its associated Providers and Patients, hence the design choice on specifying ```ON DELETE CASCADE``` for Patient and Provider foreign keys in the Appointment table. We utilize DDL to create these structures:
 ```SQL
 --- schema.sql
---- Patient Table
+-- Patient Table
 CREATE TABLE IF NOT EXISTS Patient (
     PatientID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     DateOfBirth TEXT NOT NULL,
-    ContactInfo TEXT NOT NULL
+    ContactInfo TEXT NOT NULL,
+    IsActive INTEGER DEFAULT 1
 );
 
 -- Provider Table
@@ -34,7 +35,8 @@ CREATE TABLE IF NOT EXISTS Provider (
     ProviderID INTEGER PRIMARY KEY,
     Name TEXT NOT NULL,
     Specialty TEXT NOT NULL,
-    Location TEXT NOT NULL
+    Location TEXT NOT NULL,
+    IsActive INTEGER DEFAULT 1
 );
 
 -- Appointment Table
@@ -46,9 +48,9 @@ CREATE TABLE IF NOT EXISTS Appointment (
     Reason TEXT NOT NULL,
     PatientID INTEGER NOT NULL,
     ProviderID INTEGER NOT NULL,
-    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID) ON DELETE CASCADE,
-    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID) ON DELETE CASCADE
-);
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID)
+    );
 ```
 * **Spring Boot JDBC Template**: The system uses Spring Boot's ```JdbcTemplate``` to bridge interaction between Java objects and SQL data management. This allows for the abstraction of low-level JDBC API, simplifying database interactions while keeping SQL logic hidden behind DAO interfaces.
 
@@ -156,14 +158,14 @@ Patient added successfully.
 
 Creates the following entries into the database:
 ```SQL
-INSERT INTO "Patient" VALUES (101,'Jane Doe','2000-01-01','jane.doe@example.com');
-INSERT INTO "Patient" VALUES (102,'Bob Jones','1985-10-22','555-555-3251');
+INSERT INTO "Patient" VALUES (101,'Jane Doe','2000-01-01','jane.doe@example.com',1);
+INSERT INTO "Patient" VALUES (102,'Bob Jones','1985-10-22','555-555-3251',1);
 ```
 
-| PatientID | Name | DateOfBirth | ContactInfo |
-| -------- | -------- | -------- | -------- | 
-| 101 | Jane Doe | 2000-01-01 | jane.doe@example.com |
-| 102 | Bob Jones | 1985-10-22 | 555-555-3251 |
+| PatientID | Name | DateOfBirth | ContactInfo | isActive | 
+| -------- | -------- | -------- | -------- | -------- |
+| 101 | Jane Doe | 2000-01-01 | jane.doe@example.com | 1 |
+| 102 | Bob Jones | 1985-10-22 | 555-555-3251 | 1|
 
 2. **Adding valid providers**
 ```BASH
@@ -183,13 +185,13 @@ Provider added successfully.
 ```
 Creates the following entries into the database:
 ```SQL
-INSERT INTO "Provider" VALUES (1,'Dr. John Smith','Cardiology','Room 101');
-INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102');
+INSERT INTO "Provider" VALUES (1,'Dr. John Smith','Cardiology','Room 101',1);
+INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102',1);
 ```
-| ProviderID | Name | Specialty | Location |
-| --- | --- | --- | --- |
-| 1 | Dr. John Smith | Cardiology | Room 101 |
-| 2 | Dr. Gregory Watson | Neurology | Room 102 |
+| ProviderID | Name | Specialty | Location | isActive | 
+| --- | --- | --- | --- |----------|
+| 1 | Dr. John Smith | Cardiology | Room 101 | 1        | 
+| 2 | Dr. Gregory Watson | Neurology | Room 102 | 1        |
 
 ### Valid Operations
 Demonstration of core scheduling mechanics under normal conditions
@@ -322,7 +324,7 @@ Operation error: A CANCELLED appointment cannot become COMPLETED.
 ### Query Functionality
 Demonstration of Data Access Layer successfully retrieving filtered sets of data
 1. **Query by patient:**
-In this case, we query for all of the appointments that Patient with ID '101' has scheduled.
+In this case, we query for all the appointments that Patient with ID '101' has scheduled.
 ```BASH
 Choice: 4           // View Appointments by Patient
 Patient ID: 101
@@ -340,7 +342,7 @@ Reason         : Post-operation checkup
 ------------------------------
 ```
 2. **Query by Provider:**
-In this case, we query for all of the appointments that Provider with ID '1' has scheduled.
+In this case, we query for all the appointments that Provider with ID '1' has scheduled.
 ```BASH
 Choice: 5           // View Appointments by Provider
 Provider ID: 1
@@ -396,7 +398,7 @@ Reason         : Consultation
 ```
 
 ### Deletion Constraints
-Demonstration of proper relational database constraints in regards to deletion of entities. 
+Demonstration of proper relational database constraints regarding deletion of entities. 
 In this case, we attempt to delete Patient with ID '102', who has a SCHEDULED appointment. The Service Layer simply rejects the deletion request and re-prompts the user for operations.
 1. **Invalid Deletion:**
 ```BASH
