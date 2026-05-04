@@ -9,16 +9,16 @@ The project was built to demonstrate object-oriented design and real-world backe
 We settled for a Maven-based Spring Boot application to ensure a clear separation of concerns and layered architecture. This design choice focuses on maintainability and testability by isolating logic into different components, allowing for the strict enforcement of business logic. A key contribution to this design was the refactoring of the core architecture to fully adopt a layered approach + DAO pattern, replacing earlier in-memory implementations with database-backed operations.
 
 ### Layered Architecture
-The system follows a clean separation of concerns, organized into layers to ensure compatibility between components and preservation of application logic. The components of our system is split into the following schema: Model Layer, Service Layer, Data Access Layer (DAO), and Presentation Layer (via the CLI).
+The system follows a clean separation of concerns, organized into layers to ensure compatibility between components and preservation of application logic. The components of our system are split into the following schema: Model Layer, Service Layer, Data Access Layer (DAO), and Presentation Layer (via the CLI).
 * **Model Layer**: Consists of POJOs such as ```Patient```, ```Provider```, and ```Appointment``` classes. These classes represent the core data entities of the system and are mapped directly to database tables via the Data Access Layer. This model was built off of the initial [**ER Schema**](https://github.com/ericnmt/oop-clinic-scheduler/blob/main/docs/ER_Diagram_Schema.pdf).
-* **Service Layer**: Consists of the ```AppointmentManager``` class, which orchestrates operations and ensures the strict application of business logic. Every CRUD opertion is passed through this layer for absolute business rule enforcement.
+* **Service Layer**: Consists of the ```AppointmentManager``` class, which orchestrates operations and ensures the strict application of business logic. Every CRUD operation is passed through this layer for absolute business rule enforcement.
 * **Data Access Layer**: We settled with the Data Access Object (DAO) pattern to define and map CRUD operations between POJOs and the database with business logic constraints. This layer is split into two distinct components: Interfaces and Implementation. Interfaces include ```PatientDao```, ```ProviderDao```, and ```AppointmentDao``` to define CRUD operations. These interfaces and their operations are all implemented, containing data handling and specific SQL queries needed to interact with the database.
 * **Presentation Layer**: For the primary user interface (UI), we utilized Spring Boot's ```SchedulerApplication``` class. This is the main component that handles input parsing and displays operation outputs, all while invoking the Service Layer for business rule enforcement.
 
 ### Data Management & Persistence
 Data is managed through a model that utilizes a file-based relational database.
 * **Relational Database Integration**: We settled with using the file-based SQLite framework for the relational database. This choice provides persistence across application restarts without the overhead of a dedicated database server. Database entries are stored locally, in the ```clinic.db``` file.
-* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. Note that the ```PRAGMA foreign_keys=ON``` option in the ```application.properties``` enforces database engine to strictly reference foreign keys. This is further represented below, where the existance of appointments also depends on the existance of its assocaited Providers and Patients, hence the design choice on specifying ```ON DELETE CASCAE``` for Patient and Provider foreign keys in the Appointment table. We utilize DDL to create these structures:
+* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. Note that the ```PRAGMA foreign_keys=ON``` option in the ```application.properties``` enforces database engine to strictly reference foreign keys. This is further represented below, where the existence of appointments also depends on the existence of its associated Providers and Patients, hence the design choice on specifying ```ON DELETE CASCADE``` for Patient and Provider foreign keys in the Appointment table. We utilize DDL to create these structures:
 ```SQL
 --- schema.sql
 --- Patient Table
@@ -93,7 +93,7 @@ With the use of the Spring Boot framework, setup and running the Clinic Schedule
 4. Select ```Clone Repository```
 5. A box should appear to enter the repository URL, paste the URL in this box and specify the preferred location for the repository on your device
 6. Open the repository and select ```Yes, I trust the authors```
-7. In the project's directory conents, navigate to ```src\main``` > ```java``` > ```SchedulerApplication.java```
+7. In the project's directory contents, navigate to ```src\main``` > ```java``` > ```SchedulerApplication.java```
 8. Navigate to the ```Run``` tab, select the green run icon to run the application
 9. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
@@ -107,11 +107,11 @@ git clone https://github.com/ericnmt/oop-clinic-scheduler.git
 ```BASH
 cd oop-clinic-scheduler
 ```
-3. Compile, run, and boot the application via Maven
+4. Compile, run, and boot the application via Maven
 ```BASH
 ./mvnw spring-boot:run
 ```
-4. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
+5. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
 ## Example Usages & Cases
 The Application prints the following menu to the CLI:
@@ -272,7 +272,7 @@ Reason         : Post-operation checkup
 
 ### Business Rule Violations
 Demonstration of Service Layer business logic enforcement.
-1. **Attempting to schedule an appointment with invalid entities**
+1. **Attempting to schedule an appointment with invalid entities:**
 Here, the Patient with ID '999' does not exist. The service simply rejects the appointment request and re-prompts the user for an operation.
 ```BASH
 Choice: 3           // Schedule Appointment
@@ -284,7 +284,7 @@ End Date/Time YYYY-MM-DDTHH:MM: 2026-05-28T09:00
 Input error: Cannot schedule: Patient ID 999 does not exist.
 ```
 
-2. **Attempting to schedule an appointment with an invalid time range**
+2. **Attempting to schedule an appointment with an invalid time range:**
 In this case, the appointment's start time is after the end time, which is impossible. The service simply rejects the appointment request and re-prompts the user for an operation.
 ```BASH
 Choice: 3           // Schedule Appointment
@@ -296,8 +296,8 @@ End Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T09:00
 Input error: Invalid time range: start time must be before end time.
 ```
 
-3. **Provider time conflict**
-In this case, a provider already has an appointment on May 31, 2026 from 8:00-9:00. We attempt to schedule an appointment on May 31, 2026 from 8:30-9:00 with the same provider. However, since there is booking conflict, the service layer simply rejects the appointment rquest and re-prompts the user for an operation.
+3. **Provider time conflict:**
+In this case, a provider already has an appointment on May 31, 2026 from 8:00-9:00. We attempt to schedule an appointment on May 31, 2026 from 8:30-9:00 with the same provider. However, since there is booking conflict, the service layer simply rejects the appointment request and re-prompts the user for an operation.
 ```BASH
 Choice: 3           // Schedule Appointment
 Patient ID: 102
@@ -308,7 +308,7 @@ End Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T09:00
 Operation error: Cannot schedule: Provider has a conflicting appointment.
 ```
 
-4. **Invalid Status Transition**
+4. **Invalid Status Transition:**
 In this case, we attempt to change an appointment of the "CANCELLED" status to "COMPLETED," This is logically valid since a CANCELLED appointment cannot occur, and therefore cannot be complete. The service layer simply rejects the appointment request and re-prompts the user for an operation.
 ```BASH
 Choice: 9
@@ -318,8 +318,8 @@ Operation error: A CANCELLED appointment cannot become COMPLETED.
 ```
 
 ### Query Functionality
-Demonstration of Data Access Layer successfully retriving filtered sets of data
-1. **Query by patient**
+Demonstration of Data Access Layer successfully retrieving filtered sets of data
+1. **Query by patient:**
 In this case, we query for all of the appointments that Patient with ID '101' has scheduled.
 ```BASH
 Choice: 4           // View Appointments by Patient
@@ -337,7 +337,7 @@ Status         : CANCELLED
 Reason         : Post-operation checkup
 ------------------------------
 ```
-2. **Query by Provider**
+2. **Query by Provider:**
 In this case, we query for all of the appointments that Provider with ID '1' has scheduled.
 ```BASH
 Choice: 5           // View Appointments by Provider
@@ -355,10 +355,10 @@ Status         : SCHEDULED
 Reason         : Consultation
 ------------------------------
 ```
-3. **Query by date range**
+3. **Query by date range:**
 In this case, we query for all the appointments scheduled in the month of May (2026-05-01 to 2026-05-31).
 ```BASH
-Choice: 6           // View Appointmens by Date Range
+Choice: 6           // View Appointments by Date Range
 Start Date YYYY-MM-DD: 2026-05-01
 End Date YYYY-MM-DD: 2026-05-31
 
@@ -374,7 +374,7 @@ Status         : CANCELLED
 Reason         : Post-operation checkup
 ------------------------------
 ```
-4. **Query by status**
+4. **Query by status:**
 In this case, we query for all the appointments of the "SCHEDULED" status.
 ```BASH
 Choice: 7           // View Appointmens by Status
@@ -394,15 +394,15 @@ Reason         : Consultation
 ```
 
 ## Deletion Constraints
-Demonstration of proper relational database constrains in regards to deletion of entitites. 
+Demonstration of proper relational database constraints in regards to deletion of entities. 
 In this case, we attempt to delete Patient with ID '102', who has a SCHEDULED appointment. The Service Layer simply rejects the deletion request and re-prompts the user for operations.
-1. **Invalid Deletion**
+1. **Invalid Deletion:**
 ```BASH
 Choice: 12          // Delete Patient
 Patient ID: 102
 Operation error: Cannot delete patient with active appointments.
 ```
-2. **Valid Deletion**
+2. **Valid Deletion:**
 In this case, we delete Patient with ID '101,' who has no existing SCHEDULED appointments. Note that since we deleted the Patient, the associated appointments are removed entirely from the system. 
 ```BASH
 Choice: 12          // Delete Patient
@@ -418,4 +418,3 @@ No appointments found.
 
 ## Data Persistence
 Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
-
