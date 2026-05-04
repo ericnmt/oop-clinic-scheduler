@@ -30,7 +30,9 @@ public class ProviderDaoImpl implements ProviderDao {
         String specialty = rs.getString("Specialty");
         String location = rs.getString("Location");
 
-        return new Provider(providerId, name, specialty, location);
+        Provider provider = new Provider(providerId, name, specialty, location);
+        provider.setActive(rs.getInt("IsActive") == 1);
+        return provider;
     };
 
     /**
@@ -38,12 +40,13 @@ public class ProviderDaoImpl implements ProviderDao {
      */
     @Override
     public void createProvider(Provider provider) {
-        String sql = "INSERT INTO Provider (ProviderID, Name, Specialty, Location) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Provider (ProviderID, Name, Specialty, Location, isActive) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 provider.getProviderId(),
                 provider.getName(),
                 provider.getSpecialty(),
-                provider.getLocation()
+                provider.getLocation(),
+                provider.isActive() ? 1: 0
         );
     }
 
@@ -66,7 +69,7 @@ public class ProviderDaoImpl implements ProviderDao {
      */
     @Override
     public List<Provider> getAllProviders() {
-        String sql = "SELECT * FROM Provider";
+        String sql = "SELECT * FROM Provider WHERE IsActive = 1";
         return jdbcTemplate.query(sql, providerRowMapper);
     }
 
@@ -89,7 +92,7 @@ public class ProviderDaoImpl implements ProviderDao {
      */
     @Override
     public void deleteProvider(int providerId) {
-        String sql = "DELETE FROM Provider WHERE ProviderID = ?";
+        String sql = "UPDATE Provider SET IsActive = 0 WHERE ProviderID = ?";
         jdbcTemplate.update(sql, providerId);
     }
 }

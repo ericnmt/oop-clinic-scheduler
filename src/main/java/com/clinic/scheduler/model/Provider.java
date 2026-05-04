@@ -22,6 +22,11 @@ public class Provider {
     private String location;
 
     /**
+     * The status of a Provider in the database.
+     */
+    private boolean active = true;
+
+    /**
      * Construct a new provider in the system.
      *
      * @param providerId of the Provider
@@ -112,6 +117,24 @@ public class Provider {
     }
 
     /**
+     * Get the activity status of a Provider in the database.
+     *
+     * @return activity status of Provider (true if active)
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * Set the activity status of a Provider in the database.
+     *
+     * @param active activity status flag to set (true = active).
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    /**
      * Compose the provider's information into a readable string format.
      *
      * @return string of provider's details
@@ -124,4 +147,6 @@ public class Provider {
                 ", specialty: " + specialty +
                 ", location: " + location;
     }
+
+
 }

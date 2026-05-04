@@ -87,12 +87,12 @@ public class AppointmentManager {
                                            LocalDateTime endTime) {
 
         Patient patient = patientDao.getPatientById(patientId);
-        if (patient == null) {
+        if (patient == null || !patient.isActive()) {
             throw new IllegalArgumentException("Cannot schedule: Patient ID " + patientId + " does not exist.");
         }
 
         Provider provider = providerDao.getProviderById(providerId);
-        if (provider == null) {
+        if (provider == null || !provider.isActive()) {
             throw new IllegalArgumentException("Cannot schedule: Provider ID " + providerId + " does not exist.");
         }
 
@@ -131,6 +131,10 @@ public class AppointmentManager {
 
         if (appointment == null) {
             throw new IllegalArgumentException("Cannot reschedule: Appointment ID " + appointmentId + " not found.");
+        }
+
+        if (!appointment.getPatient().isActive() || !appointment.getProvider().isActive()) {
+            throw new IllegalStateException("Cannot reschedule: Associated patient or provider is inactive.");
         }
 
         if (appointment.getStatus() == AppointmentStatus.CANCELLED ||
@@ -199,6 +203,12 @@ public class AppointmentManager {
             throw new IllegalArgumentException("Cannot update: Patient does not exist.");
         }
 
+        // Validates activity status of a patient in the system.
+        Patient existing = patientDao.getPatientById(patient.getPatientId());
+        if (existing == null || !existing.isActive()) {
+            throw new IllegalArgumentException("Cannot update: Patient does not exist or is inactive.");
+        }
+
         patientDao.updatePatient(patient);
     }
 
@@ -235,6 +245,12 @@ public class AppointmentManager {
 
         if (providerDao.getProviderById(provider.getProviderId()) == null) {
             throw new IllegalArgumentException("Cannot update: Provider does not exist.");
+        }
+
+        // Validates activity status of a provider in the system.
+        Provider existing = providerDao.getProviderById(provider.getProviderId());
+        if (existing == null || !existing.isActive()) {
+            throw new IllegalArgumentException("Cannot update: Provider does not exist or is inactive.");
         }
 
         providerDao.updateProvider(provider);

@@ -39,7 +39,9 @@ public class PatientDaoImpl implements PatientDao {
         LocalDate dateOfBirth = LocalDate.parse(rs.getString("DateOfBirth"), multiFormatter);
         String contactInfo = rs.getString("ContactInfo");
 
-        return new Patient(patientId, name, dateOfBirth, contactInfo);
+        Patient patient = new Patient(patientId, name, dateOfBirth, contactInfo);
+        patient.setActive(rs.getInt("IsActive") == 1);
+        return patient;
     };
 
     /**
@@ -47,12 +49,13 @@ public class PatientDaoImpl implements PatientDao {
      */
     @Override
     public void createPatient(Patient patient) {
-        String sql = "INSERT INTO Patient (PatientID, Name, DateOfBirth, ContactInfo) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Patient (PatientID, Name, DateOfBirth, ContactInfo, IsActive) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 patient.getPatientId(),
                 patient.getName(),
                 patient.getDateOfBirth().toString(),
-                patient.getContactInfo());
+                patient.getContactInfo(),
+                patient.isActive() ? 1 : 0);
     }
 
     /**
@@ -74,7 +77,7 @@ public class PatientDaoImpl implements PatientDao {
      */
     @Override
     public List<Patient> getAllPatients() {
-        String sql = "SELECT * FROM Patient";
+        String sql = "SELECT * FROM Patient WHERE IsActive =1";
         return jdbcTemplate.query(sql, patientRowMapper);
     }
 
@@ -88,7 +91,8 @@ public class PatientDaoImpl implements PatientDao {
                 patient.getName(),
                 patient.getDateOfBirth().toString(),
                 patient.getContactInfo(),
-                patient.getPatientId());
+                patient.getPatientId()
+        );
     }
 
     /**
@@ -96,7 +100,7 @@ public class PatientDaoImpl implements PatientDao {
      */
     @Override
     public void deletePatient(int patientId) {
-        String sql = "DELETE FROM Patient WHERE PatientID = ?";
+        String sql = "UPDATE Patient SET IsActive = 0 WHERE PatientID = ?";
         jdbcTemplate.update(sql, patientId);
     }
 }

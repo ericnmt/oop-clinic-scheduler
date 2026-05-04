@@ -15,10 +15,19 @@ public class Patient{
      */
     private String name;
     /**
-     * The patient's date of birth
+     * The patient's date of birth.
      */
     private LocalDate dateOfBirth;
+
+    /**
+     * The patient's contact information.
+     */
     private String contactInfo;
+
+    /**
+     * Flag to represent if the patient is active in the system.
+     */
+    private boolean active = true;
 
     /**
      * Construct a new patient in the system.
@@ -51,7 +60,6 @@ public class Patient{
      *
      * @param patientId of the patient
      */
-    // REVISE: A patientId should always remain the same
     public void setPatientId(int patientId) {
         this.patientId = patientId;
     }
@@ -107,9 +115,25 @@ public class Patient{
      *
      * @param contactInfo of the patient
      */
-    // REVISE: A patient may have multiple methods of contact
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
+    }
+
+    /**
+     * Get the activity status of a patient in the system.
+     * @return activity status boolean (true if active)
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * Set the activity status of a patient in the system.
+     *
+     * @param active status to set for the patient in the system
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     /**
