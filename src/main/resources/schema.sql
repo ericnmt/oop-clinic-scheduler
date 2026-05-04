@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS Appointment (
     Reason TEXT NOT NULL,
     PatientID INTEGER NOT NULL,
     ProviderID INTEGER NOT NULL,
-    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
-    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID)
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID) ON DELETE CASCADE,
+    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID) ON DELETE CASCADE
 );
