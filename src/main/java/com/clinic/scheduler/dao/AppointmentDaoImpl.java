@@ -38,8 +38,8 @@ public class AppointmentDaoImpl implements AppointmentDao {
     // Base query used for all read operations, involves JOIN as opposed to DAO injection
     public static final String SELECT_JOIN_BASE = """
             SELECT a.AppointmentID, a.StartTime, a.EndTime, a.Status, a.Reason,
-                   p.PatientID, p.Name AS PatientName, p.DateOfBirth, p.ContactInfo,
-                   pr.ProviderID, pr.Name AS ProviderName, pr.Specialty, pr.Location
+                   p.PatientID, p.Name AS PatientName, p.DateOfBirth, p.ContactInfo, p.IsActive AS PatientIsActive,
+                   pr.ProviderID, pr.Name AS ProviderName, pr.Specialty, pr.Location, pr.IsActive AS ProviderIsActive
             FROM Appointment a
             INNER JOIN Patient p ON a.PatientID = p.PatientID
             INNER JOIN Provider pr ON a.ProviderID = pr.ProviderID
@@ -60,6 +60,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
                     LocalDate.parse(rs.getString("DateOfBirth"), multiFormatter),
                     rs.getString("ContactInfo")
             );
+            patient.setActive(rs.getInt("PatientIsActive") == 1);
 
             // Build Provider object from joined columns
             Provider provider = new Provider(
@@ -68,6 +69,7 @@ public class AppointmentDaoImpl implements AppointmentDao {
                     rs.getString("Specialty"),
                     rs.getString("Location")
             );
+            provider.setActive(rs.getInt("ProviderIsActive") == 1);
 
             // Build the Appointment object using the entities defined above
             Appointment appointment = new Appointment(
