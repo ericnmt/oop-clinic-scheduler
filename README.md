@@ -114,3 +114,12 @@ cd oop-clinic-scheduler
 4. After the application boots, you should now be interacting directly witht the user interface of the program, prompted with a list of options.
 
 ## Example Usages & Cases
+### Create entity
+
+### Valid Operations
+
+### Business Rule Violations 
+
+### Query Functionality
+
+## Deletion Constraints
