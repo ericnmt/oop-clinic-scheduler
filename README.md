@@ -17,8 +17,8 @@ The system follows a clean separation of concerns, organized into layers to ensu
 
 ### Data Management & Persistence
 Data is managed through a model that utilizes a file-based relational database.
-* **Relational Database Integration**: We settled with using the file-based SQLite framework for the relational database. This choice provides persistence across application restarts without the overhead of a dedicated database server.
-* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. We utilize DDL to create these structures:
+* **Relational Database Integration**: We settled with using the file-based SQLite framework for the relational database. This choice provides persistence across application restarts without the overhead of a dedicated database server. Database entries are stored locally, in the ```clinic.db``` file.
+* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. Note that the ```PRAGMA foreign_keys=ON``` option in the ```application.properties``` enforces database engine to strictly reference foreign keys. This is further represented below, where the existance of appointments also depends on the existance of its assocaited Providers and Patients, hence the design choice on specifying ```ON DELETE CASCAE``` for Patient and Provider foreign keys in the Appointment table. We utilize DDL to create these structures:
 ```SQL
 --- schema.sql
 --- Patient Table
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS Appointment (
     Reason TEXT NOT NULL,
     PatientID INTEGER NOT NULL,
     ProviderID INTEGER NOT NULL,
-    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
-    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID)
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID) ON DELETE CASCADE,
+    FOREIGN KEY (ProviderID) REFERENCES Provider(ProviderID) ON DELETE CASCADE
 );
 ```
 * **Spring Boot JDBC Template**: The system uses Spring Boot's ```JdbcTemplate``` to bridge interaction between Java objects and SQL data management. This allows for the abstraction of low-level JDBC API, simplifying database interactions while keeping SQL logic hidden behind DAO interfaces.
@@ -150,11 +150,18 @@ Date of Birth YYYY-MM-DD: 1985-10-22
 Contact Info: 555-555-3251
 Patient added successfully.
 ```
+
 Creates the following entries into the database:
 ```SQL
 INSERT INTO "Patient" VALUES (101,'Jane Doe','2000-01-01','jane.doe@example.com');
 INSERT INTO "Patient" VALUES (102,'Bob Jones','1985-10-22','555-555-3251');
 ```
+
+| PatientID | Name | DateOfBirth | ContactInfo |
+| -------- | -------- | -------- | -------- | 
+| 101 | Jane Doe | 2000-01-01 | jane.doe@example.com |
+| 102 | Bob Jones | 1985-10-22 | 555-555-3251 |
+
 2. **Adding valid providers**
 ```BASH
 Choice: 2           // Add Provider
@@ -176,6 +183,11 @@ Creates the following entries into the database:
 INSERT INTO "Provider" VALUES (1,'Dr. John Smith','Cardiology','Room 101');
 INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102');
 ```
+| ProviderID | Name | Specialty | Location |
+| --- | --- | --- | --- |
+| 1 | Dr. John Smith | Cardiology | Room 101 |
+| 2 | Dr. Gregory Watson | Neurology | Room 102 |
+
 
 ### Valid Operations
 Demonstration of core scheduling mechanics under normal conditions
@@ -204,6 +216,10 @@ Creates the following entry into the database:
 ```SQL
 INSERT INTO "Appointment" VALUES (1,'2026-06-10T08:00:00','2026-06-10T09:00:00','SCHEDULED','Post-operation checkup',101,2);
 ```
+| AppointmentID | StartTime | EndTime | Status | Reason | _PatientID_ | _ProviderID_ |
+| --- | --- | --- | --- | --- | --- | --- |
+1 | 2026-06-10T08:00:00 | 2026-06-10T09:00:00 | SCHEDULED | Post-operation checkup | 101 | 2 |
+
 2. **Rescheduling an appointment**
 ```BASH
 Choice: 8           // Reschedule Appointment
@@ -302,5 +318,102 @@ Operation error: A CANCELLED appointment cannot become COMPLETED.
 ```
 
 ### Query Functionality
+Demonstration of Data Access Layer successfully retriving filtered sets of data
+1. **Query by patient**
+In this case, we query for all of the appointments that Patient with ID '101' has scheduled.
+```BASH
+Choice: 4           // View Appointments by Patient
+Patient ID: 101
+
+=== Appointments ===
+------------------------------
+Appointment ID : 1
+Patient        : Jane Doe (ID: 101)
+Provider       : Dr. Gregory Watson (Neurology)
+Location       : Room 102
+Start Time     : 2026-05-31T08:00
+End Time       : 2026-05-31T09:00
+Status         : CANCELLED
+Reason         : Post-operation checkup
+------------------------------
+```
+2. **Query by Provider**
+In this case, we query for all of the appointments that Provider with ID '1' has scheduled.
+```BASH
+Choice: 5           // View Appointments by Provider
+Provider ID: 1
+
+=== Appointments ===
+------------------------------
+Appointment ID : 2
+Patient        : Bob Jones (ID: 102)
+Provider       : Dr. John Smith (Cardiology)
+Location       : Room 101
+Start Time     : 2026-07-18T10:00
+End Time       : 2026-07-18T11:00
+Status         : SCHEDULED
+Reason         : Consultation
+------------------------------
+```
+3. **Query by date range**
+In this case, we query for all the appointments scheduled in the month of May (2026-05-01 to 2026-05-31).
+```BASH
+Choice: 6           // View Appointmens by Date Range
+Start Date YYYY-MM-DD: 2026-05-01
+End Date YYYY-MM-DD: 2026-05-31
+
+=== Appointments ===
+------------------------------
+Appointment ID : 1
+Patient        : Jane Doe (ID: 101)
+Provider       : Dr. Gregory Watson (Neurology)
+Location       : Room 102
+Start Time     : 2026-05-31T08:00
+End Time       : 2026-05-31T09:00
+Status         : CANCELLED
+Reason         : Post-operation checkup
+------------------------------
+```
+4. **Query by status**
+In this case, we query for all the appointments of the "SCHEDULED" status.
+```BASH
+Choice: 7           // View Appointmens by Status
+Status SCHEDULED, COMPLETED, or CANCELLED: SCHEDULED
+
+=== Appointments ===
+------------------------------
+Appointment ID : 2
+Patient        : Bob Jones (ID: 102)
+Provider       : Dr. John Smith (Cardiology)
+Location       : Room 101
+Start Time     : 2026-07-18T10:00
+End Time       : 2026-07-18T11:00
+Status         : SCHEDULED
+Reason         : Consultation
+------------------------------
+```
 
 ## Deletion Constraints
+Demonstration of proper relational database constrains in regards to deletion of entitites. 
+In this case, we attempt to delete Patient with ID '102', who has a SCHEDULED appointment. The Service Layer simply rejects the deletion request and re-prompts the user for operations.
+1. **Invalid Deletion**
+```BASH
+Choice: 12          // Delete Patient
+Patient ID: 102
+Operation error: Cannot delete patient with active appointments.
+```
+2. **Valid Deletion**
+In this case, we delete Patient with ID '101,' who has no existing SCHEDULED appointments. Note that since we deleted the Patient, the associated appointments are removed entirely from the system. 
+```BASH
+Choice: 12          // Delete Patient
+Patient ID: 101
+Patient deleted successfully.
+```
+To verify that the appointment was deleted, we may query for the appointments associated with the Provider who previously had an appointment scheduled with Patient with ID '101.'
+```BASH
+Choice: 5          // View Appointments by Provider
+Provider ID: 2     // Dr. Gregory Wattson, previously had a scheduled appointment with Jane Doe, Patient ID '101'
+No appointments found.
+```
+
+
