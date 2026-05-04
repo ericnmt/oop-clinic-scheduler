@@ -18,7 +18,7 @@ The system follows a clean separation of concerns, organized into layers to ensu
 ### Data Management & Persistence
 Data is managed through a model that utilizes a file-based relational database.
 * **Relational Database Integration**: We settled with using the file-based SQLite framework for the relational database. This choice provides persistence across application restarts without the overhead of a dedicated database server. Database entries are stored locally, in the ```clinic.db``` file.
-* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure, defined in ```schema.sql```, which establishes the three primary tables consisting of each entity's Primary and Foreign Keys. Note that the ```PRAGMA foreign_keys=ON``` option in the ```application.properties``` enforces database engine to strictly reference foreign keys. This is further represented below, where the existence of appointments also depends on the existence of its associated Providers and Patients, hence the design choice on specifying ```ON DELETE CASCADE``` for Patient and Provider foreign keys in the Appointment table. We utilize DDL to create these structures:
+* **Schema Enforcement**: The foundational ER schema was translated into the primary database structure defined in schema.sql. Originally, we relied on ```ON DELETE CASCADE``` for foreign keys. However, in a real world application, destroying a patient's profile should not also destroy their historical medical records for auditing and compliance purposes. Therefore, we implemented a soft delete pattern into the backend. The Patient and Provider tables utilize an ```isActive``` flag (```INTEGER DEFAULT 1```). When a patient is "deleted", this flag is toggled to 0, hiding from active operations while preserving all historical "COMPLETED" and "CANCELLED" appointments.
 ```SQL
 --- schema.sql
 -- Patient Table
@@ -62,7 +62,7 @@ The architecture ensures integrity and robustness via validation through the Ser
 
 ### Update & Deletion Constraints
 * **Update Operations**: Implemented update functionality for Patient and Provider entities with proper validation checks before committing changes.
-* **Safe Deletion Logic**: Enforced constraints preventing deletion of patients or providers with active appointments.
+* **Safe Deletion Logic**: Enforced constraints preventing the deletion (deactivation) of patients or providers if they have active "SCHEDULED" appointments. Once deactivated, the system strictly blocks any further updates or scheduling for that entity, preventing the existance of "zombie" records from entering the schedule.
 * **Referential Integrity**: Integrated database checks to avoid orphaned records and maintain consistent relationships between entities.
 
 ### DAO Pattern Implementation
@@ -240,8 +240,8 @@ Patient ID: 101
 === Appointments ===
 ------------------------------
 Appointment ID : 1
-Patient        : Jane Doe (ID: 101)
-Provider       : Dr. Gregory Watson (Neurology)
+Patient        : Jane Doe (ID: 101), active: true
+Provider       : Dr. Gregory Watson (Neurology), active: true
 Location       : Room 102
 Start Time     : 2026-05-31T08:00
 End Time       : 2026-05-31T09:00
@@ -249,6 +249,7 @@ Status         : SCHEDULED
 Reason         : Post-operation checkup
 ------------------------------
 ```
+Note that the ```active: true``` boolean flag designates that the Patient or Provider is on the system. In the case where either entity is deleted from the system, the status will be changed to ```false```, but the medical record will remain intact (refer to the Deletion Constrations section).
 3. **Updating Appointment Status**
 ```BASH
 Choice: 9           // Update Appointment Status
@@ -264,8 +265,8 @@ Patient ID: 101
 === Appointments ===
 ------------------------------
 Appointment ID : 1
-Patient        : Jane Doe (ID: 101)
-Provider       : Dr. Gregory Watson (Neurology)
+Patient        : Jane Doe (ID: 101), active: true
+Provider       : Dr. Gregory Watson (Neurology), active: true
 Location       : Room 102
 Start Time     : 2026-05-31T08:00
 End Time       : 2026-05-31T09:00
@@ -332,8 +333,8 @@ Patient ID: 101
 === Appointments ===
 ------------------------------
 Appointment ID : 1
-Patient        : Jane Doe (ID: 101)
-Provider       : Dr. Gregory Watson (Neurology)
+Patient        : Jane Doe (ID: 101), active: true
+Provider       : Dr. Gregory Watson (Neurology), active: true
 Location       : Room 102
 Start Time     : 2026-05-31T08:00
 End Time       : 2026-05-31T09:00
@@ -350,8 +351,8 @@ Provider ID: 1
 === Appointments ===
 ------------------------------
 Appointment ID : 2
-Patient        : Bob Jones (ID: 102)
-Provider       : Dr. John Smith (Cardiology)
+Patient        : Bob Jones (ID: 102), active: true
+Provider       : Dr. John Smith (Cardiology), active: true
 Location       : Room 101
 Start Time     : 2026-07-18T10:00
 End Time       : 2026-07-18T11:00
@@ -369,8 +370,8 @@ End Date YYYY-MM-DD: 2026-05-31
 === Appointments ===
 ------------------------------
 Appointment ID : 1
-Patient        : Jane Doe (ID: 101)
-Provider       : Dr. Gregory Watson (Neurology)
+Patient        : Jane Doe (ID: 101), active: true
+Provider       : Dr. Gregory Watson (Neurology), active: true
 Location       : Room 102
 Start Time     : 2026-05-31T08:00
 End Time       : 2026-05-31T09:00
@@ -407,17 +408,48 @@ Patient ID: 102
 Operation error: Cannot delete patient with active appointments.
 ```
 2. **Valid Deletion:**
-In this case, we delete Patient with ID '101,' who has no existing SCHEDULED appointments. Note that since we deleted the Patient, the associated appointments are removed entirely from the system. 
+In this case, we delete (deactivate) Patient with ID '101,' who has no existing SCHEDULED appointments, but has a 'CANCELLED' appointment.
 ```BASH
 Choice: 12          // Delete Patient
 Patient ID: 101
 Patient deleted successfully.
 ```
-To verify that the appointment was deleted, we may query for the appointments associated with the Provider who previously had an appointment scheduled with Patient with ID '101.'
+We verify that the "Soft Delete" preserved the medical history by querying the appointments for the Provider who previously saw Patient 101. Note that Jane Doe's record is still intact in the database.
 ```BASH
-Choice: 5          // View Appointments by Provider
-Provider ID: 2     // Dr. Gregory Wattson, previously had a scheduled appointment with Jane Doe, Patient ID '101'
-No appointments found.
+Choice: 5
+Provider ID: 2
+
+=== Appointments ===
+------------------------------
+Appointment ID : 1
+Patient        : Jane Doe (ID: 101), active: false
+Provider       : Dr. Gregory Watson (Neurology), active: true
+Location       : Room 102
+Start Time     : 2026-05-31T08:00
+End Time       : 2026-05-31T09:00
+Status         : CANCELLED
+Reason         : Post-operation checkup
+------------------------------
 ```
 
 ### Edge Cases
+1. **Scheduling Block**: In this case, we attempt to schedule a new appointment for Patient with ID '101', who has now been deactivated. The Service Layer correctly rejects the attempt.
+```BASH
+Choice: 3
+Patient ID: 101
+Provider ID: 2
+Reason: Follow-up
+Start Date/Time YYYY-MM-DDTHH:MM (YYYY-MM-DDTHH:MM): 2026-08-10T08:00
+End Date/Time YYYY-MM-DDTHH:MM (YYYY-MM-DDTHH:MM): 2026-08-10T09:00
+Input error: Cannot schedule: Patient ID 101 does not exist.
+```
+2. **Modification Block**: In this case, we attempt to update the contact information for the deactivated Patient 101. The system rejects the update to protect the frozen state of the archived entity.
+```BASH
+Choice: 10
+Patient ID: 101
+Updated Name: Jane Doe
+Updated Date of Birth YYYY-MM-DD (YYYY-MM-DD): 2000-01-01
+Updated Contact Info: jane.doe.new@example.com
+Input error: Cannot update: Patient does not exist or is inactive.
+```
+The same logic also applies to the Provider entity.
