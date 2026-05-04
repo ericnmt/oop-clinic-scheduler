@@ -63,7 +63,7 @@ The architecture ensures integrity and robustness via validation through the Ser
 * **Safe Deletion Logic**: Enforced constraints preventing deletion of patients or providers with active appointments.
 * **Referential Integrity**: Integrated database checks to avoid orphaned records and maintain consistent relationships between entities.
 
-### Database Setup Instructions
+### DAO Pattern Implementation
 * **DAO-Driven Operations**: Replaced all in-memory logic with DAO-based database queries to ensure persistence and scalability.
 * **Scheduling Logic Refactor**: Modified scheduleAppointment and rescheduleAppointment to use DAO methods for inserting, updating, and retrieving appointment data.
 * **Consistent Data Flow**: Ensured all interactions between application logic and the database are routed through the Data Access Layer.
@@ -188,6 +188,8 @@ INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102');
 | 1 | Dr. John Smith | Cardiology | Room 101 |
 | 2 | Dr. Gregory Watson | Neurology | Room 102 |
 
+### Data Persistence
+Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
 
 ### Valid Operations
 Demonstration of core scheduling mechanics under normal conditions
@@ -393,7 +395,7 @@ Reason         : Consultation
 ------------------------------
 ```
 
-## Deletion Constraints
+### Deletion Constraints
 Demonstration of proper relational database constraints in regards to deletion of entities. 
 In this case, we attempt to delete Patient with ID '102', who has a SCHEDULED appointment. The Service Layer simply rejects the deletion request and re-prompts the user for operations.
 1. **Invalid Deletion:**
@@ -416,5 +418,4 @@ Provider ID: 2     // Dr. Gregory Wattson, previously had a scheduled appointmen
 No appointments found.
 ```
 
-## Data Persistence
-Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
+### Edge Cases
