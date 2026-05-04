@@ -254,7 +254,52 @@ Reason         : Post-operation checkup
 ------------------------------
 ```
 
-### Business Rule Violations 
+### Business Rule Violations
+Demonstration of Service Layer business logic enforcement.
+1. **Attempting to schedule an appointment with invalid entities**
+Here, the Patient with ID '999' does not exist. The service simply rejects the appointment request and re-prompts the user for an operation.
+```BASH
+Choice: 3           // Schedule Appointment
+Patient ID: 999
+Provider ID: 1
+Reason: Checkup
+Start Date/Time YYYY-MM-DDTHH:MM: 2026-05-28T08:00
+End Date/Time YYYY-MM-DDTHH:MM: 2026-05-28T09:00
+Input error: Cannot schedule: Patient ID 999 does not exist.
+```
+
+2. **Attempting to schedule an appointment with an invalid time range**
+In this case, the appointment's start time is after the end time, which is impossible. The service simply rejects the appointment request and re-prompts the user for an operation.
+```BASH
+Choice: 3           // Schedule Appointment
+Patient ID: 101
+Provider ID: 2
+Reason: Post-operation checkup
+Start Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T10:00
+End Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T09:00
+Input error: Invalid time range: start time must be before end time.
+```
+
+3. **Provider time conflict**
+In this case, a provider already has an appointment on May 31, 2026 from 8:00-9:00. We attempt to schedule an appointment on May 31, 2026 from 8:30-9:00 with the same provider. However, since there is booking conflict, the service layer simply rejects the appointment rquest and re-prompts the user for an operation.
+```BASH
+Choice: 3           // Schedule Appointment
+Patient ID: 102
+Provider ID: 2
+Reason: Consultation
+Start Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T08:30
+End Date/Time YYYY-MM-DDTHH:MM: 2026-05-31T09:00
+Operation error: Cannot schedule: Provider has a conflicting appointment.
+```
+
+4. **Invalid Status Transition**
+In this case, we attempt to change an appointment of the "CANCELLED" status to "COMPLETED," This is logically valid since a CANCELLED appointment cannot occur, and therefore cannot be complete. The service layer simply rejects the appointment request and re-prompts the user for an operation.
+```BASH
+Choice: 9
+Appointment ID: 1
+Status SCHEDULED, COMPLETED, or CANCELLED: COMPLETED
+Operation error: A CANCELLED appointment cannot become COMPLETED.
+```
 
 ### Query Functionality
 
