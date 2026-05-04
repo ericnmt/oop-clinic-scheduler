@@ -416,4 +416,6 @@ Provider ID: 2     // Dr. Gregory Wattson, previously had a scheduled appointmen
 No appointments found.
 ```
 
+## Data Persistence
+Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
 
