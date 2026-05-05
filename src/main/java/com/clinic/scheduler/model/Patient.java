@@ -15,9 +15,12 @@ public class Patient{
      */
     private String name;
     /**
-     * The patient's date of birth
+     * The patient's date of birth.
      */
     private LocalDate dateOfBirth;
+    /**
+     * The patient's contact information.
+     */
     private String contactInfo;
 
     /**
