@@ -52,7 +52,6 @@ public class Provider {
      *
      * @param providerId of the provider
      */
-    // REVISE: A provider ID should never change after initially set
     public void setProviderId(int providerId) {
         this.providerId = providerId;
     }
