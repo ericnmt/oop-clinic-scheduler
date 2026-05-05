@@ -116,7 +116,7 @@ cd oop-clinic-scheduler
 ```
 5. After the application boots, you should now be interacting directly with the user interface of the program, prompted with a list of options.
 
-## Example Usages & Cases
+## Example Usages & Testing Evidence
 The Application prints the following menu to the CLI:
 ```BASH
 Clinic Appointment Scheduler
