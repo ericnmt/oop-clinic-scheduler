@@ -73,6 +73,9 @@ The architecture ensures integrity and robustness via validation through the Ser
 * **Edge Case Handling**: Tested invalid time ranges, conflicting appointments, and invalid IDs to ensure robust validation.
 * **Status Updates**: Confirmed correct handling of appointment state changes such as CANCELLED.
 
+### Data Persistence
+Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
+
 ## How To Run
 With the use of the Spring Boot framework, setup and running the Clinic Scheduler application is easy and can be done by following the steps below.
 ## IntelliJ Instructions
@@ -187,9 +190,6 @@ INSERT INTO "Provider" VALUES (2,'Dr. Gregory Watson','Neurology','Room 102');
 | --- | --- | --- | --- |
 | 1 | Dr. John Smith | Cardiology | Room 101 |
 | 2 | Dr. Gregory Watson | Neurology | Room 102 |
-
-### Data Persistence
-Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
 
 ### Valid Operations
 Demonstration of core scheduling mechanics under normal conditions
