@@ -94,7 +94,6 @@ public class Patient{
 
     /**
      * Get the contact information of a patient.
-     * More than one method of contact may exist (TBA).
      *
      * @return patient's contact information
      */
@@ -107,7 +106,6 @@ public class Patient{
      *
      * @param contactInfo of the patient
      */
-    // REVISE: A patient may have multiple methods of contact
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
     }
