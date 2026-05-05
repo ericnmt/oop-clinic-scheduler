@@ -417,5 +417,3 @@ Choice: 5          // View Appointments by Provider
 Provider ID: 2     // Dr. Gregory Wattson, previously had a scheduled appointment with Jane Doe, Patient ID '101'
 No appointments found.
 ```
-
-### Edge Cases
