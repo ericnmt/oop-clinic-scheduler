@@ -51,7 +51,6 @@ public class Patient{
      *
      * @param patientId of the patient
      */
-    // REVISE: A patientId should always remain the same
     public void setPatientId(int patientId) {
         this.patientId = patientId;
     }
