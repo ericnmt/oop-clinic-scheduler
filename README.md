@@ -77,7 +77,7 @@ The architecture ensures integrity and robustness via validation through the Ser
 Since CRUD operations are reflected on the ```clinic.db``` file, all database changes are stored locally in this file. Therefore, data persists beyond Spring Boot sessions and may be accessed and modified in unique sessions.
 
 ## How To Run
-With the use of the Spring Boot framework, setup and running the Clinic Scheduler application is easy and can be done by following the steps below.
+With the use of the Spring Boot framework, setup and running the Clinic Scheduler application is easy and can be done by following the steps below. Note that because the database is file-based and utilizes Spring Boot's automatic initialization, no manual database installation or setup is required by the user. 
 ## IntelliJ Instructions
 1. Copy the clone path in this repository by navigating to ```Code``` > (Select the Copy icon for HTTPS to copy the URL)
 2. Open IntelliJ
@@ -313,10 +313,22 @@ Operation error: Cannot schedule: Provider has a conflicting appointment.
 4. **Invalid Status Transition:**
 In this case, we attempt to change an appointment of the "CANCELLED" status to "COMPLETED," This is logically valid since a CANCELLED appointment cannot occur, and therefore cannot be complete. The service layer simply rejects the appointment request and re-prompts the user for an operation.
 ```BASH
-Choice: 9
+Choice: 9           // Update Appointment Status
 Appointment ID: 1
 Status SCHEDULED, COMPLETED, or CANCELLED: COMPLETED
 Operation error: A CANCELLED appointment cannot become COMPLETED.
+```
+
+5. **Invalid Time Format:**
+In this case, we attempt to create an appointment with a time format that does not follow the system's standards. The application handles this case gracefully by re-prompting for the date and time in the correct format. This ensures that all dates stored in the system are standardized, further supporting its robustness.
+```BASH
+Choice: 3           // Schedule Appointment
+Patient ID: 101
+Provider ID: 2
+Reason: Check-up
+Start Date/Time YYYY-MM-DDTHH:MM (YYYY-MM-DDTHH:MM): May 10, 2026
+ Invalid format. Use YYYY-MM-DDTHH:MM.
+Start Date/Time YYYY-MM-DDTHH:MM (YYYY-MM-DDTHH:MM): 
 ```
 
 ### Query Functionality
